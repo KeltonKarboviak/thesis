@@ -1,0 +1,195 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Masters/Doctoral Thesis
+% LaTeX Template
+% Version 1.43 (17/5/14)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original authors:
+% Steven Gunn
+% http://users.ecs.soton.ac.uk/srg/softwaretools/document/templates/ % and
+% Sunil Patel
+% http://www.sunilpatel.co.uk/thesis-template/
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+% Note:
+% Make sure to edit document variables in the Thesis.cls file
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[12pt, oneside]{styles/Thesis} % The default font size and one-sided printing (no margin offsets)
+
+% declare the path(s) where your graphic files are
+\graphicspath{{img/}}
+% and their extensions so you won't have to specify these with
+% every instance of \includegraphics
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+
+\usepackage{bm}
+\usepackage[detect-all]{siunitx}
+
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+
+\usepackage[square, numbers, comma, sort&compress]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers'
+\hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
+\title{\ttitle} % Defines the thesis title - don't touch this
+
+% correct bad hyphenation here // only hypenate where specified
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+% Initialize Nomenclature
+\makenomenclature{}
+
+% Custom Commands
+\newcommand\abs[1]{\left|#1\right|}
+\newcommand{\eg}{{\textit e.g.}}
+\newcommand{\ie}{{\textit i.e.}}
+\newcommand{\etal}{{\textit et al. }}
+
+\begin{document}
+
+\pagestyle{plain}
+\frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+
+
+% PDF meta-data
+\hypersetup{pdftitle={\ttitle}}
+\hypersetup{pdfsubject=\subjectname}
+\hypersetup{pdfauthor=\authornames}
+\hypersetup{pdfkeywords=\keywordnames}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\maketitle
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	DECLARATION PAGE
+%	Your institution may give you a different text to place here
+%----------------------------------------------------------------------------------------
+
+\declaration{}
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	PERMISSION PAGE
+%	Your institution may give you a different text to place here
+%----------------------------------------------------------------------------------------
+
+\permission{} % Add a gap in the Contents, for aesthetics
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+
+\tableofcontents % Write out the Table of Contents
+\listoffigures % Write out the List of Figures
+\listoftables % Write out the List of Tables
+
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	QUOTATION PAGE
+%----------------------------------------------------------------------------------------
+
+
+%\thispagestyle{empty} % No headers or footers for the following pages
+%\vspace*{\fill}
+
+%\textit{``Thanks to my solid academic training, today I can write hundreds of words on virtually any topic without possessing a shred of information, which is how I got a good job in journalism.''}
+
+%\begin{flushright}
+%Dave Barry
+%\end{flushright}
+
+%\vspace*{\fill}
+
+%\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\acknowledgements{The acknowledgements and the people to thank go here, don't forget to include your project advisor\ldots}
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	DEDICATION
+%----------------------------------------------------------------------------------------
+
+\dedication{For/Dedicated to/To my\ldots}
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\abstract{\input{chapters/00-abstract}}
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	ABBREVIATIONS & SYMBOLS
+%----------------------------------------------------------------------------------------
+
+%\nomenclature{LAH}{List Appreviations Here}
+%\nomenclature{Acronym}{What (it) stands for}
+\nomenclature{$a$}{The number of angels per unit area}
+\nomenclature{$N$}{The number of angels per needle point}
+\nomenclature{$A$}{The area of the needle point}
+%\nomenclature{$P$}{power =W (Js$^{-1}$)}
+%\nomenclature{$\omega$}{angular frequency & rads$^{-1}$}
+
+%\chapter{Nomenclature}
+\printnomenclature{}
+\clearpage % Start a new page
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%----------------------------------------------------------------------------------------
+
+\mainmatter{} % Begin numeric (1,2,3...) page numbering
+
+\doublespacing{}
+
+\input{chapters/01-introduction}
+\input{chapters/02-related_work}
+\input{chapters/03-methodology}
+%\input{chapters/04-implementation}
+\input{chapters/05-results}
+\input{chapters/06-conclusion}
+%\input{chapters/07-future_work}
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - APPENDICES
+%----------------------------------------------------------------------------------------
+
+\appendix
+
+% Include the appendices of the thesis as separate files from the Appendices folder
+% Uncomment the lines as you write the Appendices
+
+%\input{appendices/AppendixA}
+%\input{Appendices/AppendixB}
+%\input{Appendices/AppendixC}
+
+\backmatter{}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\bibliographystyle{IEEEtran}
+\bibliography{bibliography}
+
+\end{document}
+

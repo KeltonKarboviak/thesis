@@ -1,0 +1,31 @@
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+This paper presents an analysis of the use of feature detection, machine learning, and background subtraction algorithms for the classification and detection of events within uncontrolled outdoor avian nesting video. The effectiveness of feature detection and machine learning was tested with SURF and a SVM while background subtraction was tested with Mixture of Gaussians, modified Pixel-Based Adaptive Segmentation and modified ViBe.
+
+The results for the background subtraction algorithms where obtained using over 100 hours of video along with human observations gathered by project experts and volunteer citizen scientists at the Wildlife@Home project~\cite{desell_2013_wildlife,desell_iccs_wildlife_2015}. Results show that PBAS outperforms both MOG and ViBe, and reaches high enough accuracy to be a promising technique for detecting video segments that are most interesting and important for an expert and citizen scientist to observe and classify. This opens up the possibility of using the modified PBAS as a filter to reduce the amount of time spent by scientists analyzing the 85,000 hours of video at Wildlife@Home.
+
+Feature detection using SURF was run using BOINC~\cite{anderson_2004_boinc} and used approximately 500 machines to process 1,750 hours of wildlife video. Each machine takes approximately 3 hours of CPU time to process a single hour long video recorded at 10 frames per second. The descriptors collection from the volunteer computers were processed on a 4 core Mac Book Pro using LIBSVM~\cite{chang_2011_libsvm}.
+
+The videos used in the background subtraction work were processed on a Mac Pro across 12 logical cores and proved adequate for retrieving this sample of results in just over 48 hours, however processing all 85,000 hours of video at Wildlif@Home is unfeasible. Due to these promising initial results, we are currently using BOINC~\cite{anderson_2004_boinc} to harness Wildlife@Home's 2,000+ volunteered computers to collect background subtraction data for the entire data set.
+
+
+\section{Feature Detection and Machine Learning}
+\label{sec:conclusion_machine_learning}
+
+Results for learning to detect the presence of birds in wildlife video are not promising. Too many variables come into play with video quality, species cryptic coloration, camera lighting, and the quality of training data. The feature detection used requires very clean training data and this couldn't be provided by the current Wildlife@Home event classification system.
+
+Certain aspects of this approach may see improvement with some changes. The effect of camera lighting on descriptor quality may be reduced with the normalization of the video lighting using something like Retinex~\cite{land_1971_lightness, jobson_1997_multiscale}. The quality of the training data may see some improvements with the user of a buffer on expert events. This could be implemented by ignoring frames near the beginning and end of expert events to help prevent misclassifying descriptors collected by SIFT and SURF\@.
+
+Using a feature detector that can handle non-rigid objects, such as HOG\cite{dalal_2005_histograms}, may reduce the number of SVM false matches. Since HOG focuses on gradient changes rather than the detection of corners it may be a better approach to feature detection.
+
+
+\section{Background Subtraction}
+\label{sec:conclusion_background_subtraction}
+
+Background subtraction shows promise as a useful technique for reliably detecting interesting video in the Wildlife@Home tern and plover video. The number false positives in the grouse footage makes it less useful for for scientists but it remains an accurate method of detecting movement. With PBAS having relatively high accuracy and low number of false positives when compared with the other algorithms, it is currently the best overall performer.
+
+In addition to analyzing more videos, changes can be made in order to more accurately detect segments of interest within the videos. Rapidly changing brightness inhibits the background subtraction algorithms. Possibilities for normalizing scene brightness, such as Retinex~\cite{land_1971_lightness, jobson_1997_multiscale} or adjusting the exponential moving average filter to mark video segments with extreme foreground detection (\eg, larger then 20\% to 30\% of the frame) remain as future work. More in-depth improvements could involve taking nest location into consideration and increasing the importance of foreground pixels located around the nest. Since cameras are placed strategically facing the nests we can safely assume nest location is close to the center of the frame and can easily scale foreground pixel importance accordingly.
+
+These background subtraction results will be integrated into the interface used by project and citizen scientists to gain human feedback on the correctness of computer calculated event occurrences. This will not only help confirm the computed results but will also notify users to a possible upcoming event, which could improve human accuracy. Background subtraction provides a first step towards fully using automated strategies as a filter before showing the Wildlife@Home videos to scientists, allowing them to reliably skip segments of the videos where there is no animal activity.
+

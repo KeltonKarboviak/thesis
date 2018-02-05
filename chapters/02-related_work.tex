@@ -1,0 +1,163 @@
+\chapter{Related Work}
+\label{ch:related_work}
+
+This chapter gives a detailed overview of common feature detection and machine learning methods and modern approaches to background subtraction. Both background subtraction and feature detection are popular categories of computer vision and typically play different roles in the processing of data. In the sections below we hope to provide meaningful and up to date information about applying these methods.
+
+
+\section{Feature Detection}
+\label{sec:works_feature_detection}
+
+The process of feature detection in computer vision is the use of image qualities to find unique or descriptive regions. These regions can be used to find a matching object or scene in another image. There are mainly three qualities of an image that are used to describe an object or scene, edges~\cite{gao_2010_improved, canny_1986_computational, dalal_2005_histograms}, corners~\cite{shi_1994_good}, and blobs~\cite{lowe_1999_object, bay_2008_speeded, bay_2006_surf}. The main to algorithms we will be looking at use blob detection which uses a kernel (Laplacian or Gaussian) to find local extremum within an image and uses them as keypoints or descriptors.
+
+
+\subsection{SIFT\@: Scale Invariant Feature Detection}
+\label{sec:sift}
+In this paper Lowe~\cite{lowe_1999_object} proposes a scale and rotation invariant feature detection and matching method called SIFT\@. This technique works by create a scale space representation of the image by successively blurring the image with a Gaussian kernel. The difference of these Guassian blurs is used to locate maxima and minima in the scale space which are then used as keypoints. The image gradient $G_{i,j}$ and orientation $O_{i,j}$ are calculated using pixel differences in image $I$.
+
+\begin{equation}
+    G_{i,j}(I) = \sqrt{{(I_{i,j}-I_{i+1,j})}^2 + {(I_{i,j}-I_{i,j+1})}^2}
+    \label{eq:gradient}
+\end{equation}
+
+\begin{equation}
+    O_{i,j}(I) = \arctan{\frac{I_{i,j}-I_{i+1,j}}{I_{i,j+1}-I_{i,j}}}
+    \label{eq:gradient}
+\end{equation}
+
+The orientation and gradient are stored with a canonical gradient orientation in order to make the keypoints independent of image rotation. This means storing them according to their gradient peak. Each feature is inserted into a 36 bin histogram according to their 360 degree orientation.
+
+The scale and rotation invariance of SURF makes it a good candidate for outdoor detection of non-rigid objects however the features are sensitive to lighting and this will become a problem with any nighttime footage. SIFT is also relatively slow, at around 1.5 seconds per image, and this becomes a serious problem for video processing.
+
+
+\subsection{SURF\@: Speeded Up Robust Features}
+\label{sec:surf}
+
+Bay \etal~\cite{bay_2008_speeded}\cite{bay_2006_surf} similar blob detection as SIFT (Section~\ref{sec:sift}) however they use estimations for the Gaussian filters by taking advantage of the quick sums calculated with integral images. With an integral image, finding the sum of pixel values over any rectangular area only requires three addition operations. The use of integral images allows for extremely fast Gaussian derivatives and keypoint orientation calculations via Haar wavelets.
+
+SURF comes out to be about 4 times faster than SIFT\@. It's speed and reliability make it better suited than SIFT for processing video however it is still not ideal without real-time video analysis.
+
+
+\section{Machine Learning}
+\label{sec:works_machine_learning}
+
+This section discusses the current status and role of Support Vector Machine Classification in machine learning. A Support Vector Machine (SVM) is a machine learning classifier which learns how to classify new input from a set of pre-classified training data. SVMs can learn binary-class data or multiclass data; this paper focuses on the former.
+
+There are two main types of optimization problems that SVMs solve in order to learn to predict the class of new data. The first equation assumes the data is cleanly separated, none of the training is incorrectly labeled. This equation is as follows:
+
+\begin{align}
+D(\bm{\alpha}) = &\sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j k(x_i, x_j) \nonumber \\
+\text{subject to} \: &\sum_{i=1}^n \alpha_i y_i = 0,\\
+&0 \le \alpha_i, \;\;\; i=1,\ldots,n, \nonumber
+\label{eq:svm}
+\end{align}
+
+\noindent such that $\bm{\alpha}$ is a set of Lagrange multipliers, $(\bm{x_i}, y_i)$ is a data element where $\bm{x_i}$ is the set of input features and $y_i \epsilon \{-1,1\}$ is the class identifier, and $n$ is the number of input elements.
+
+The second equation used a modifier called the \emph{slack variable} which allows for a margin of error in the training data. This margin prevents overfitting of the training data. There are many different equations which use different \emph{slack variables} but the most common is as follows:
+
+\begin{align}
+D(\bm{\alpha}) = &\sum_{i=1}^n \alpha_i - \frac{1}{2} \sum_{i=1}^n \sum_{j=1}^n \alpha_i \alpha_j y_i y_j k(x_i, x_j) \nonumber \\
+\text{subject to} \: &\sum_{i=1}^n \alpha_i y_i = 0,\\
+&0 \le \alpha_i \le C, \;\;\; i=1,\ldots,n, \nonumber
+\label{eq:c_svm}
+\end{align}
+
+\noindent where the only additional symbol here is $C$, the \emph{slack variable} for computing a soft margin.
+
+Each of these equations is the dual form of their primal counterparts. This means that, under their given constraints, they return the optimal solution for their primal form.
+
+Below we cover six different implementations of SVMs and their approach to performance. LIBSVM in~\ref{sec:svm_libsvm}, Map-Reduce in~\ref{sec:map_reduce}, Cascade SVM in~\ref{sec:svm_cascade}, PSVM in~\ref{sec:svm_psvm}, Fast SVM Training and Classification on Graphics Processors in~\ref{sec:svm_fast_gpu} and cuSVM in~\ref{sec:svm_cusvm}.
+
+
+\subsection{LIBSVM\@: A Library for Support Vector Machines}
+\label{sec:svm_libsvm}
+
+This paper is an overview of the LIBSVM software package and its implementation. LIBSVM is one of the most popular and widely used SVM libraries\cite{chang_2011_libsvm}. Chang~\etal{}\cite{chang_2011_libsvm} emphasize LIBSVM's reliability and thus the main reason for its support and popularity in the software community. The library supports classification, regression, and distribution estimation with different SVM Kernels including, linear, polynomial, radial basis, and sigmoid.
+
+The LIBSVM solves the C-SVM optimization problem by default. This problem is defined as:
+
+\begin{align}
+\min{\alpha} \;\;\; & \frac{1}{2} \bm{\alpha} ^T \bm{Q} \bm{\alpha} - \bm{e}^T \bm{\alpha} \nonumber \\
+\text{subject to} \: &\bm{y}^T \bm{\alpha}=0,\\
+&0 \le \alpha_i \le C, \;\;\; i=1,\ldots,l, \nonumber
+\label{eq:opt_svm}
+\end{align}
+
+\noindent where $\alpha$ is the set of Lagrange multipliers to be optimized, $e=\lbrack1,\ldots,1\rbrack^T$ is a vector of ones, $Q$ is a matrix $Q_{ij} \equiv y_i y_j K(x_i,x_j)$, and where $K(x_i,x_j)$ is the Kernel function. Within $Q$, $x$ is the set of features and $y$ is the sample class. Once optimized the Lagrange multipliers are used in the classification of any test data.
+\begin{equation} \text{accuracy}= \frac{\text{samples correctly predicted}}{\text{total sample size}} * 100 \label{eq:svm_accuracy}
+\end{equation}
+
+Chang~\etal{}\cite{chang_2011_libsvm} measure the accuracy of an SVM classifier as the number of correctly predicated samples divided by the total sample size of the test data. Due to the reliability of the LIBSVM library the reported accuracy can be used to test future implementations of SVMs.
+
+
+\section{Background Subtraction}
+\label{sec:work_background_subtraction}
+
+This section discusses approaches for background subtraction, or as it is sometimes referred, foreground segmentation. Background subtraction is the process of removing the uninteresting or unwanted regions of a video in order to highlight the foreground or objects of interest. Many methods fit each pixel value in a frame to a background model based on probability using previously observed values. The most common methods along with more modern approaches are presented. This includes the running Gaussian average (\ref{sec:running_gaussian_average}), Mixture of Gaussians (\ref{sec:mog}), ViBe (\ref{sec:vibe}), pixel-based adaptive segmentation (\ref{sec:pbas}), and a couple techniques used in a similar problem domain (\ref{sec:ko}).
+
+
+\subsection{Running Gaussian Average}
+\label{sec:running_gaussian_average}
+Running Gaussian average is one of the most basic background subtraction techniques~\cite{mcivor_2000_background, piccardi_2004_background} and has also been effective in applications with a static background such as traffic cameras~\cite{koller_1994_towards, heikkila_2004_real}. This technique works by storing a model of the background $\textbf{B}_t$ and calculating the distance of each new image $\textbf{I}_t$ from the background model. If this distance is larger than a provided threshold, $\tau$, then the pixel at that location is marked as foreground. This threshold can be seen in Equation~\ref{eq:simple_threshold}.
+
+\begin{equation}
+    \abs{\textbf{I}_t - \textbf{B}_t} < \tau
+    \label{eq:simple_threshold}
+\end{equation}
+
+The background model can then be updated by using an exponential moving average which slowly adapts to changes:
+
+\begin{equation}
+    \textbf{B}_{t+1} = \alpha \cdot \textbf{I}_t + (1-\alpha) \cdot \textbf{B}_t
+    \label{eq:running_gaussian_average}
+\end{equation}
+
+Where $\alpha$ is the rate at which the model adjusts and $t$ is the current frame index.
+
+There are a few effective methods for cleaning the results from a simple running Gaussian average as pointed out in~\cite{mcivor_2000_background}. The first is to clean up the foreground mask with some type of filter. Both a median filter and a open/close filter work well. If a pixel has been marked as foreground for too many consecutive frames it can be set in the background model to prevent long standing false detection in the vent of a sudden lighting change. Finally if a pixel is rapidly changing from foreground to background it can be masked to prevent sporadic and unreliable detection.
+
+
+\subsection{Mixture of Gaussians (MOG)}
+\label{sec:mog}
+MOG is a widely used and robust background subtraction algorithm used in OpenCV~\cite{opencv_library}. It is based on modeling the background pixels as a combination of surfaces~\cite{power_2002_understanding} which is further described as a Gaussian mixture model. The probability of a pixel belonging to the background is described as a sum of Gaussians:
+
+\begin{equation}
+    f_{\textbf{X}}(X|\Phi) = \sum_{k=1}^{K} P(k) \cdot f_{\textbf{X}|k}(X|k,\theta_k)
+    \label{eq:sum_of_gaussians}
+\end{equation}
+
+where $P(k)$ is the probability of the surface $k$ appearing in the pixel view and $f_{\textbf{X}|k}(X|k,\theta_k)$ is the Gaussian distribution for surface $k$ with $\Phi$ being the set of theta input parameters ($\theta_k = {\mu_k,\sigma_k}$) for the Gaussian distributions describing each surface.
+
+Power and Schoonees note that $P(k)$, $\mu_k$, and $\theta_k$ are typically estimated with running averages calculated at each frame~\cite{power_2002_understanding}. Also, $f_{\textbf{X}|k}(X|k,\theta_k)$ for a pixel value $x$ can be estimated by a Boolean value, true if $x$ is within 2.5 standard deviations of the mean, false otherwise.
+
+With MOG, similar techniques to those in Section~\ref{sec:running_gaussian_average} can be used to clean results. The use of an open/close filter is especially useful for removing noise.
+
+
+\subsection{ViBe}
+\label{sec:vibe}
+ViBe~\cite{van_2014_vibe} is a background subtraction algorithm based on random substitution and spatial diffusion. Van Droogenbroeck~\etal\cite{van_2014_vibe} approach background model formulation with stochasticity in order increase the robustness of their algorithms and increase the range of background pixels stored in the model. Since ViBe does not rely on statistical modeling of pixel history the authors believe it can better match a pixels true history by actually using past pixel values. This means ViBe can fit multi-modal pixel histories and better adapt to slight background movement.
+
+To model the background, ViBe stochastically stores 20 previous pixel values and compares new pixel values to this pixel history. If a pixel value matches (see Equation~\ref{eq:simple_threshold}) two of the stored values then it is classified as part of the background, otherwise it is masked as foreground. This method of classification allows for up to 10 different background models to be fit by ViBe.
+
+As alluded to earlier, updating the background model is a stochastic processing in ViBe. Each new observed pixel value has a 1/16 chance to overwrite a random position in the 20 previously stored pixel values. Previous pixel values are not stored as a FIFO queue since this implies some linearity to background pixel occurrence which is typically not the case in real world data. If a pixel history is updated there is another 1/16 chance to update one randomly selected neighboring pixel. This random update process allows for an adaptive model that can slowly absorb foreground object that have become part of the static background.
+
+ViBe employs the use of an open/close filter to remove noise from the foreground mask as in~\ref{sec:running_gaussian_average}. Van Droogenbroeck~\etal{}\cite{van_2014_vibe} also suggest using the filtered mask as the update mask such that ViBe will add the unwanted noise to the background model.
+
+
+\subsection{Pixel-Based Adaptive Segmentation (PBAS)}
+\label{sec:pbas}
+PBAS, introduced by Hofmann \etal\cite{hofmann_2012_background}, is a foreground segmentation algorithm that uses the stochastic portions of ViBe~\cite{van_2014_vibe} along with pixel-based adaptive thresholding and updating. PBAS adjusts thresholds to the pixel variance in the image by dynamically setting the threshold, $\tau$, as shown in Equation~\ref{eq:simple_threshold}, and the probability of pixel update from Section~\ref{sec:vibe}.
+
+Hofmann \etal\cite{hofmann_2012_background} measure background dynamics by calculating the mean from a stored array of previously observed minimum pixel differences~\cite{hofmann_2012_background}. When background dynamics are high, a larger threshold, $\tau$, can be used to reduce noise and the probability for updating the background model can be increased to allow for quicker absorption of false foreground detection. By contrast, when background dynamics are low, a smaller and more precise $\tau$ can be used with a smaller update probability to keep foreground detections in the foreground longer. This means PBAS allows for strong foreground segmentation on pixels with a highly static background while simultaneously using a more lenient set of parameters on highly dynamic regions of the image such as water or foliage.
+
+
+\subsection{Background Subtraction on Distributions}
+\label{sec:ko}
+
+Work in a similar domain, the observation of avian behaviors, has been done by researching background subtraction techniques as a method for observing birds visiting a feeder~\cite{ko_2008_background, ko_2010_warping}. This environment naturally has an active background with foliage movement, however birds drawn to feeders are not typically in their ideal environment for camouflage and since they are feeding tend to be more active than when on the nest. The technique proposed in~\cite{ko_2008_background} was designed to solve noise generated by background movement by looking at pixel neighborhood distributions but is more computationally expensive than pixel-based approaches.
+
+
+\subsection{MotionMeerkat}
+\label{sec:motion_meerkat}
+MotionMeerkat is a general use tool to detect motion in ecological environments created by Ben Weinstein~\cite{weinstein_2014_motionmeerkat}. The tool is used to alleviate the process of video stream data analysis by extracting frames with motion from a video file. MotionMeerkat can either use MOG (Section~\ref{sec:mog}) or a version of Running Gaussian Average (Section~\ref{sec:running_gaussian_average}) for foreground segmentation and then uses blob detection and thresholding to determine if a foreground object it present. Weinstein's results show that MotionMeerkat is successful in many ecological environments but is still subject to problems such as rapid lighting changes, and camouflage.
+
