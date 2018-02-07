@@ -32,6 +32,9 @@
 % every instance of \includegraphics
 \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
 
+\usepackage{cleveref}
+\usepackage{cite}
+\usepackage{url}
 \usepackage{bm}
 \usepackage[detect-all]{siunitx}
 
@@ -39,6 +42,7 @@
 
 \usepackage[square, numbers, comma, sort&compress]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers'
 \hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
+
 \title{\ttitle} % Defines the thesis title - don't touch this
 
 % correct bad hyphenation here // only hypenate where specified
@@ -93,8 +97,11 @@
 %----------------------------------------------------------------------------------------
 
 \tableofcontents % Write out the Table of Contents
+\clearpage
 \listoffigures % Write out the List of Figures
+\clearpage
 \listoftables % Write out the List of Tables
+\clearpage
 
 \clearpage % Start a new page
 
@@ -120,24 +127,14 @@
 \clearpage % Start a new page
 
 %----------------------------------------------------------------------------------------
-%	ABBREVIATIONS & SYMBOLS
-%----------------------------------------------------------------------------------------
-
-%\nomenclature{LAH}{List Appreviations Here}
-%\nomenclature{Acronym}{What (it) stands for}
-% \nomenclature{$a$}{The number of angels per unit area}
-% \nomenclature{$N$}{The number of angels per needle point}
-% \nomenclature{$A$}{The area of the needle point}
-%\nomenclature{$P$}{power =W (Js$^{-1}$)}
-%\nomenclature{$\omega$}{angular frequency & rads$^{-1}$}
-
-%\chapter{Nomenclature}
-% \printnomenclature{}
-% \clearpage % Start a new page
-
-%----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
 %----------------------------------------------------------------------------------------
+
+% Turns Chapter numbering off, adds Chapter line to Table of Contents, then turns Chapter numbering back on for later chapters
+\addtocontents{toc}{\cftpagenumbersoff{chapter}}
+\addcontentsline{toc}{chapterstar}{Chapter}
+\addtocontents{toc}{\cftpagenumberson{chapter}}
+
 
 \mainmatter{} % Begin numeric (1,2,3...) page numbering
 
@@ -146,10 +143,9 @@
 \input{chapters/01-introduction}
 \input{chapters/02-related_work}
 \input{chapters/03-methodology}
-%\input{chapters/04-implementation}
+\input{chapters/04-implementation}
 \input{chapters/05-results}
 \input{chapters/06-conclusion}
-%\input{chapters/07-future_work}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - APPENDICES

@@ -42,21 +42,27 @@
 \ProcessOptions\relax
 \LoadClass{\baseclass}
 
-\def\today{\singlespace\ifcase\month\or
-  January\or February\or March\or April\or May\or June\or
-  July\or August\or September\or October\or November\or December\fi
-  \\ \number\year}
-\def\singletoday{\ifcase\month\or
-  January\or February\or March\or April\or May\or June\or
-  July\or August\or September\or October\or November\or December\fi
-  ~
-  \number\year}
+% \def\today{\singlespace\ifcase\month\or
+%   January\or February\or March\or April\or May\or June\or
+%   July\or August\or September\or October\or November\or December\fi
+%   \\ \number\year}
+% \def\singletoday{\ifcase\month\or
+%   January\or February\or March\or April\or May\or June\or
+%   July\or August\or September\or October\or November\or December\fi
+%   ~
+%   \number\year}
+\def\graduation{\singlespace May\\2018}
+\def\singlegraduation{May~2018}
 
 \usepackage[nottoc,numbib]{tocbibind}
 %\usepackage[intoc]{nomencl}
 \usepackage{nomencl}
 \usepackage{setspace}
 %\usepackage{vmargin}
+
+% Used to modify the Table of Contents page
+\usepackage{tocloft}
+\usepackage{etoolbox}
 
 % Use continuous figure and table counters
 \usepackage{chngcntr}
@@ -93,7 +99,7 @@
 %\pdfstringdefDisableCommands{\let\\\space}
 
 %----------------------------------------------------------------------------------------
-%	PARAPRAPH STYLE
+%	PARAGRAPH STYLE
 %----------------------------------------------------------------------------------------
 \raggedright
 \setlength{\parindent}{15pt}
@@ -115,8 +121,9 @@
 %\titlespacing{\subsection}{0pt}{*0}{*0}
 
 % Set section numbering to roman numerals
-\renewcommand{\thesection}{\Roman{section}}
-\renewcommand{\thesubsection}{\thesection.\Roman{subsection}}
+\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{}
+\renewcommand{\thesubsection}{}
 
 %----------------------------------------------------------------------------------------
 %	COMMANDS
@@ -124,9 +131,8 @@
 \newcommand*{\supervisor}[1]{\def\supname{#1}}
 \newcommand*{\committeefirst}[1]{\def\committeefirstname{#1}}
 \newcommand*{\committeesecond}[1]{\def\committeesecondname{#1}}
-\newcommand*{\committeethird}[1]{\def\committeethirdname{#1}}
+% \newcommand*{\committeethird}[1]{\def\committeethirdname{#1}}
 \newcommand*{\thesistitle}[1]{\def\ttitle{#1}}
-\newcommand*{\examiner}[1]{\def\examname{#1}}
 \newcommand*{\degree}[1]{\def\degreename{#1}}
 \newcommand*{\prevdegree}[1]{\def\prevdegreename{#1}}
 \newcommand*{\authors}[1]{\def\authornames{#1}}
@@ -135,10 +141,8 @@
 \newcommand*{\UNIVERSITY}[1]{\def\UNIVNAME{#1}}
 \newcommand*{\department}[1]{\def\deptname{#1}}
 \newcommand*{\DEPARTMENT}[1]{\def\DEPTNAME{#1}}
-\newcommand*{\group}[1]{\def\groupname{#1}}
-\newcommand*{\GROUP}[1]{\def\GROUPNAME{#1}}
 \newcommand*{\faculty}[1]{\def\facname{#1}}
-\newcommand*{\FACULTY}[1]{\def\FACNAME{#1}}
+% \newcommand*{\FACULTY}[1]{\def\FACNAME{#1}}
 \newcommand*{\subject}[1]{\def\subjectname{#1}}
 \newcommand*{\keywords}[1]{\def\keywordnames{#1}}
 
@@ -154,19 +158,15 @@
 %-------------------------------------------------
 \supervisor{Dr. Travis Desell} % Your supervisor's name
 %-------------------------------------------------
-\committeefirst{Dr. Ron Marsh} % Your first committe member's name
+\committeefirst{Dr. Hasaan Reza} % Your first committee member's name
 %-------------------------------------------------
-\committeesecond{Dr. Wen-Chen Hu} % Your second committe member's name
-%-------------------------------------------------
-\committeethird{Dr. Susan Ellis-Felege} % Your third committe member's name
-%-------------------------------------------------
-\examiner{} % Your examiner's name - this is not currently used anywhere in the template, cite it with \examname if you want it
+\committeesecond{Brandon Wild} % Your second committee member's name
 %-------------------------------------------------
 \degree{Master of Science} % Your degree name - this is currently used in the title page and abstract
 %-------------------------------------------------
-\prevdegree{Bachelor of Science, University of North Dakota, 2013} % Name previous degree name
+\prevdegree{Bachelor of Science, University of North Dakota, 2016} % Name previous degree name
 %-------------------------------------------------
-\authors{Kyle Andrew Goehner} % Your name - this is used in the title page and abstract
+\authors{Kelton Olson Karboviak} % Your name - this is used in the title page and abstract
 %-------------------------------------------------
 \address{Grand Forks, North Dakota} % School address - cite it with \addressname if you want it
 %-------------------------------------------------
@@ -190,21 +190,13 @@
                 {DEPARTMENT OF COMPUTER SCIENCE}} % Your department's name in capitals - this is not currently used anywhere in the template, cite it with \DEPTNAME if you want it
                 {DEPARTMENT OF COMPUTER SCIENCE}}
 %-------------------------------------------------
-\group{\texorpdfstring{\href{Research Group Web Site URL Here (include http://)} % Your research group's URL
-                {Research Group Name}} % Your research group's name - this is currently used in the title page
-                {Research Group Name}}
-%-------------------------------------------------
-\GROUP{\texorpdfstring{\href{Research Group Web Site URL Here (include http://)} % Your research group's URL
-                {RESEARCH GROUP NAME (IN BLOCK CAPITALS)}} % Your research group's name in capitals - this is not currently used anywhere in the template, cite it with \GROUPNAME if you want it
-                {RESEARCH GROUP NAME (IN BLOCK CAPITALS)}}
-%-------------------------------------------------
 \faculty{\texorpdfstring{\href{Faculty Web Site URL Here (include http://)} % Your faculty's URL
                 {Faculty Name}} % Your faculty's name - this is currently used in the abstract page
                 {Faculty Name}}
 %-------------------------------------------------
-\FACULTY{\texorpdfstring{\href{Faculty Web Site URL Here (include http://)} % Your faculty's URL
-                {FACULTY NAME (IN BLOCK CAPITALS)}} % Your faculty's name in capitals - this is not currently used anywhere in the template, cite it with \FACNAME if you want it
-                {FACULTY NAME (IN BLOCK CAPITALS)}}
+% \FACULTY{\texorpdfstring{\href{Faculty Web Site URL Here (include http://)} % Your faculty's URL
+%                 {FACULTY NAME (IN BLOCK CAPITALS)}} % Your faculty's name in capitals - this is not currently used anywhere in the template, cite it with \FACNAME if you want it
+%                 {FACULTY NAME (IN BLOCK CAPITALS)}}
 %----------------------------------------------------------------------------------------
 
 % The default title page, this is not used in this www.latextemplates.com version
@@ -228,14 +220,14 @@
             \bigskip
             \bigskip
 
-            {\large \href{mailto:kyle.goehner.2@my.und.edu}{\authornames} \\} % Author name
+            {\large \href{mailto:kelton.karboviak@und.edu}{\authornames} \\} % Author name
             {\large \prevdegreename \\}
             \bigskip
             \bigskip
             \bigskip
             \bigskip
 
-            {\large A thesis \\}
+            {\large A Thesis \\}
             \bigskip
             {\large Submitted to the Graduate Faculty \\}
             \bigskip
@@ -257,7 +249,9 @@
             \bigskip
             \bigskip
 
-            {\large \singlespace \addressname \\ \today \\} % School location and date
+			{\large \addressname} % Address of University
+            \bigskip
+            {\large \graduation} % Date of graduation
         \end{center}
     \end{titlepage}
     \setcounter{page}{2}
@@ -273,6 +267,7 @@
     \global\let\and\relax
     \restoregeometry
 }
+
 %----------------------------------------------------------------------------------------
 %	DECLARATION PAGE
 %----------------------------------------------------------------------------------------
@@ -298,16 +293,13 @@
     \noindent\rule[0.1em]{20em}{0.5pt}\\
     \noindent\committeesecondname
 
-    \noindent\rule[0.1em]{20em}{0.5pt}\\
-    \noindent\committeethirdname
-
     \end{adjustwidth}
 
     \bigskip
     \bigskip
     \bigskip
 
-    This thesis is being submitted by the appointed advisory committee as having met all of the requirments of the School of Graduate Studies at the \univname\ and is hereby approved.
+    This thesis is being submitted by the appointed advisory committee as having met all of the requirements of the School of Graduate Studies at the \univname\ and is hereby approved.
 
     \bigskip
     \bigskip
@@ -352,9 +344,9 @@
     \bigskip
     \bigskip
 
-    \begin{adjustwidth}{25em}{}
+    \begin{adjustwidth}{24em}{}
     \noindent\authornames\\
-    \noindent\singletoday
+    \noindent\singlegraduation
     \end{adjustwidth}
 }
 
@@ -387,43 +379,100 @@
 \newenvironment{dedication}[1]
 {
     \singlespacing
-    \chapter*{Dedication}
     \thispagestyle{empty}
     \addtocounter{page}{-1}
     \begin{center}
+    	\vspace*{\fill} % Vertically centers text
         #1
+        \vspace*{\fill} % Vertically centers text
     \end{center}
 }
+
 %----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+\renewcommand{\contentsname}{Table of Contents} % Rename chapter name for Table of Contents
+
+% \cftsetindents{chapter}{0em}{2.75em}
+\setlength{\cftchapindent}{2.75em}
+
+\makeatletter
+\let\l@chapterstar\l@chapter
+% \patchcmd{<cmd>}{<search>}{<replace>}{<success>}{<failure>}
+\patchcmd{\l@chapterstar}{\cftchapindent}{\cftchapstarindent}{}{}
+\patchcmd{\l@chapterstar}{\cftchapfont}{\cftchapstarfont}{}{}% Insert starred chapter font
+\patchcmd{\l@chapterstar}{#2}{\cftchapstarpagefont #2}{}{}% Insert starred chapter page number font
+\makeatother
+
+\newcommand{\cftchapstarindent}{0em}
+\newcommand{\cftchapstarfont}{\cftchapfont\itshape}
+\newcommand{\cftchapstarpagefont}{\cftchappagefont\itshape}
 
 
-\addtocounter{secnumdepth}{1}
-\setcounter{tocdepth}{6}
-\renewcommand\tableofcontents{
-\begin{spacing}{1}{
-    \setlength{\parskip}{1pt}
-    \if@twocolumn
-      \@restonecoltrue\onecolumn
-    \else
-      \@restonecolfalse
-    \fi
-    \chapter*{\contentsname
-        \@mkboth{
-           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}
-    \@starttoc{toc}
-    \if@restonecol\twocolumn\fi
-}\end{spacing}
-}
-\renewcommand\listoffigures{
-    \setlength{\parskip}{10pt}
-    \chapter{\listfigurename}
-    Figure \hfill Page\par
-    \@starttoc{lof}
-}
-\renewcommand\listoftables{
-    \setlength{\parskip}{10pt}
-    \chapter{\listtablename}
-    Table \hfill Page\par
-    \@starttoc{lot}
-}
+\renewcommand{\cftparskip}{6pt}
+\renewcommand{\cftchapdotsep}{\cftdotsep}
+
+\renewcommand{\cfttoctitlefont}{\hfill\MakeUppercase}
+\renewcommand{\cftaftertoctitle}{\hfill\mbox{}}
+\renewcommand{\cftaftertoctitleskip}{6pt}
+           
+\renewcommand{\cftchapaftersnum}{.}
+
+% \addtocounter{secnumdepth}{1}
+% \setcounter{tocdepth}{6}
+% \renewcommand\tableofcontents{
+% \begin{spacing}{1}{
+%     \setlength{\parskip}{1pt}
+%     \if@twocolumn
+%       \@restonecoltrue\onecolumn
+%     \else
+%       \@restonecolfalse
+%     \fi
+%     \chapter*{\contentsname
+%         \@mkboth{
+%            \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}
+%     \@starttoc{toc}%
+%     \if@restonecol\twocolumn\fi
+% }\end{spacing}
+% }
+
+%----------------------------------------------------------------------------------------
+%	LIST OF FIGURES
+%----------------------------------------------------------------------------------------
+\cftsetindents{figure}{0em}{2em}
+
+\renewcommand{\cftloftitlefont}{\hfill\MakeUppercase}
+\renewcommand{\cftafterloftitle}{\hfill\mbox{}\\[\baselineskip]
+	Figure \hfill Page}
+\renewcommand{\cftafterloftitleskip}{6pt}
+
+\renewcommand{\cftfigaftersnum}{.}
+
+
+% \renewcommand\listoffigures{
+%     \setlength{\parskip}{10pt}
+%     \chapter{\listfigurename}
+%     Figure \hfill Page\par
+%     \@starttoc{lof}%
+% }
+
+%----------------------------------------------------------------------------------------
+%	LIST OF TABLES
+%----------------------------------------------------------------------------------------
+\cftsetindents{table}{0em}{2em}
+
+\renewcommand{\cftlottitlefont}{\hfill\MakeUppercase}
+\renewcommand{\cftafterlottitle}{\hfill\mbox{}\\[\baselineskip]
+	Table \hfill Page}
+\renewcommand{\cftafterlottitleskip}{6pt}
+
+\renewcommand{\cfttabaftersnum}{.}
+
+
+% \renewcommand\listoftables{
+%     \setlength{\parskip}{10pt}
+%     \chapter{\listtablename}
+%     Table \hfill Page\par
+%     \@starttoc{lot}%
+% }
 
