@@ -1,3 +1,60 @@
 \chapter{Results} \label{ch:results}
 
+%----------------------------------------
+% EXPERIMENTS
+%----------------------------------------
+\section{Experiments}
 
+
+
+%----------------------------------------
+% QUALITY
+%----------------------------------------
+\section{Quality}
+
+	\note{Accuracy results from previous papers.}
+	\note{If you had 50 approaches, compare my grade to CFI.  Statistical results about frequency, overlap.}
+
+
+%----------------------------------------
+% PERFORMANCE
+%----------------------------------------
+\section{Performance}
+
+	A secondary aspect of this research is to minimize the execution time so  the analysis only adds a minimal amount of time to a flight being imported into the NGAFID system.  The results of the benchmarking tests showed that the linearly executing application ran for an average of XXX.XXX seconds over the 100 randomly tested flights.  On the other hand, the parallel application ran for an average of XX.XXX seconds over the same flights.  This means the average per-flight execution times for the linear and parallel applications were X.XXX and X.XXX seconds, respectively.  As a result, the parallelized application had a XX.XXX\% speedup, which is fairly significant.  A summary of the benchmarking tests and other relevant statistics are given in \Cref{tab:performance_results}.
+    \note{Fill in timing results.}
+    
+    As further evidence, the parallel application was tested on a larger subset of flights to see if the average execution time remained stable, in which it was tested on 5,272 flights.  For this test, the parallel application was able to analyze the data and insert all the results into the database in XXXX.XXX seconds.  This gives a per-flight execution time of X.XXX seconds, which is slightly less than the average for 100 flights.  The reasoning behind this can most likely be attributed to the fact that spinning up the sub-processes creates a substantial overhead.  Thus, the longer the application is able to execute, the greater performance gain will be received.  This will, of course, start to show diminishing returns as with any other parallel computing application.
+    
+    
+    \begin{table}[tb]
+        \caption{\small{Performance of Linear v. Parallel Execution Times}}
+        \vspace{3pt}
+        \label{tab:performance_results}
+        \centering
+        \begin{tabular}{@{} >{\centering\arraybackslash} m{.23\linewidth} S[table-format=3.3] S[table-format=2.3] @{}}
+            \hline\noalign{\smallskip}
+            \bfseries Run & \bfseries Linear (sec) & \bfseries Parallel (sec) \\
+            \noalign{\smallskip}
+            \hline
+            \noalign{\smallskip}
+             1 & 591.935 & 57.295 \\ \hline
+             2 & 576.774 & 60.282 \\ \hline
+             3 & 586.009 & 57.830 \\ \hline
+             4 & 597.643 & 62.489 \\ \hline
+             5 & 591.170 & 57.578 \\ \hline
+             6 & 585.834 & 62.702 \\ \hline
+             7 & 593.711 & 65.064 \\ \hline
+             8 & 587.177 & 66.167 \\ \hline
+             9 & 586.059 & 58.108 \\ \hline
+            10 & 590.012 & 56.501 \\ \hline
+            \hline
+            \bfseries Average           & 588.632 & 60.402   \\ \hline
+            \bfseries Latency / flight  &   5.886 &  0.604   \\ \hline
+            \bfseries Speedup           &         & 90.255\% \\ \hline
+        \end{tabular}
+    \end{table}
+    
+    
+    
+    

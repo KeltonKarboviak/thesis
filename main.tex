@@ -33,10 +33,11 @@
 \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
 
 \usepackage{cleveref}
-\usepackage{cite}
 \usepackage{url}
 \usepackage{bm}
 \usepackage[detect-all]{siunitx}
+
+\usepackage[obeyFinal]{todonotes}
 
 \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
 
@@ -55,7 +56,12 @@
 \newcommand\abs[1]{\left|#1\right|}
 \newcommand{\eg}{{\textit e.g.}}
 \newcommand{\ie}{{\textit i.e.}}
-\newcommand{\etal}{{\textit et al. }}
+\newcommand{\etal}{{\textit et al.}}
+
+\newcommand{\note}[1]{\todo[inline, author={Kelton}]{#1}}
+
+\newcommand{\toolname}{Go-Around Detection Tool}
+\newcommand{\toolnameshort}{GADT}
 
 \begin{document}
 
@@ -68,6 +74,7 @@
 \hypersetup{pdfsubject=\subjectname}
 \hypersetup{pdfauthor=\authornames}
 \hypersetup{pdfkeywords=\keywordnames}
+
 
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
@@ -97,11 +104,8 @@
 %----------------------------------------------------------------------------------------
 
 \tableofcontents % Write out the Table of Contents
-\clearpage
 \listoffigures % Write out the List of Figures
-\clearpage
 \listoftables % Write out the List of Tables
-\clearpage
 
 \clearpage % Start a new page
 
@@ -131,12 +135,14 @@
 %----------------------------------------------------------------------------------------
 
 % Turns Chapter numbering off, adds Chapter line to Table of Contents, then turns Chapter numbering back on for later chapters
-\addtocontents{toc}{\cftpagenumbersoff{chapter}}
-\addcontentsline{toc}{chapterstar}{Chapter}
-\addtocontents{toc}{\cftpagenumberson{chapter}}
+% \addtocontents{toc}{\cftpagenumbersoff{chapter}}
+% \addcontentsline{toc}{chapterstar}{Chapter}
+% \addtocontents{toc}{\cftpagenumberson{chapter}}
 
 
 \mainmatter{} % Begin numeric (1,2,3...) page numbering
+
+\listoftodos
 
 \doublespacing{}
 

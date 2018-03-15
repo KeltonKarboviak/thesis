@@ -1,3 +1,26 @@
 \chapter{Implementation} \label{ch:implementation}
 
+%----------------------------------------
+% PROGRAMMING LANGUAGES & LIBRARIES
+%----------------------------------------
+\section{Programming Languages and Libraries}
 
+	The Python programming language was used for implementing the flight analysis due to its ease of use, its reputable scientific and graphing libraries, and the ability to quickly produce a viable application.  The libraries utilized are MySQLdb\footnote{http://mysql-python.sourceforge.net/MySQLdb.html} for interacting with the MySQL database, matplotlib\footnote{https://matplotlib.org/} for graphing flight parameters in the early stages of the application, NumPy\footnote{http://www.numpy.org/} and Pandas\footnote{https://pandas.pydata.org/} for their scientific functions, and the geodesy scripts created by Chris Veness\footnote{http://www.movable-type.co.uk/scripts/latlong.html}.  All source code is available at \url{https://github.com/KeltonKarboviak/NGAFID}.
+    
+    For web interface\todo{Fix this.}: Laravel 5.0\footnote{https://laravel.com/} as a PHP back-end framework, jQuery 2.2.4\footnote{https://jquery.com/} \& jQuery UI 1.11.2\footnote{https://jqueryui.com/}, Bootstrap 3\footnote{https://getbootstrap.com/docs/3.3/} for CSS styling, OpenLayers 4.6.4\footnote{http://openlayers.org/} for creating an interactive map, OpenStreetMap\footnote{https://www.openstreetmap.org} for the images used by OpenLayers, and Turf.js 5.1.5\footnote{http://turfjs.org/} for its geodesy functions.  All source code for the web interface is available at \url{https://github.com/travisdesell/ngafid}.
+
+
+%----------------------------------------
+% HARDWARE SPECS
+%----------------------------------------
+\section{Hardware Specs}
+
+	All experiments were performed on a 2013 Mac Pro running macOS 10.11.6 with a 3.5 GHz 6 hyper-threaded core Intel Xeon E5 processor (for a total of 12 logical processing cores). The machine also has 32 GBs of 1866 MHz DDR3 ECC RAM.
+
+
+%----------------------------------------
+% PARALLELIZATION
+%----------------------------------------
+\section{Parallelization}
+
+	The application was originally created to process the flight data in a linear fashion.  This proved to be fairly time consuming when running the application in batch mode with the significant number of flights contained in the NGAFID.  In order to improve the performance and efficiency of the application, Python's built-in multiprocessing module was used.  The parallel application uses the simple Producer-Consumer model in which the parent process acts at the Producer by enqueuing all of the unique flight identifiers onto a queue and the child subprocesses act as the Consumers by dequeuing a flight identifier then processing it.  The multiprocessing module was chosen over the built-in threading module due to the issue with Python's Global Interpreter Lock (GIL) effectively restricting bytecode execution to a single core~\cite{Beazley:2010:Understanding-t}.  This makes the threading module unusable for long-running CPU-bound tasks, which this application heavily relies on.

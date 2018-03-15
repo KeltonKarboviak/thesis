@@ -61,8 +61,8 @@
 %\usepackage{vmargin}
 
 % Used to modify the Table of Contents page
-\usepackage{tocloft}
-\usepackage{etoolbox}
+% \usepackage{tocloft}
+% \usepackage{etoolbox}
 
 % Use continuous figure and table counters
 \usepackage{chngcntr}
@@ -75,8 +75,8 @@
 %----------------------------------------------------------------------------------------
 %	MARGINS
 %----------------------------------------------------------------------------------------
-\usepackage[showframe,paper=a4paper,top=1.0in,bottom=1.0in,right=1.0in,left=1.5in]{geometry}
-%\usepackage[paper=a4paper,top=1.0in,bottom=1.0in,right=1.0in,left=1.5in]{geometry}
+% \usepackage[showframe,paper=a4paper,top=1.0in,bottom=1.0in,right=1.0in,left=1.5in]{geometry}
+\usepackage[paper=a4paper,top=1.0in,bottom=1.0in,right=1.0in,left=1.5in]{geometry}
 
 %----------------------------------------------------------------------------------------
 \usepackage{amsmath}
@@ -121,9 +121,8 @@
 %\titlespacing{\subsection}{0pt}{*0}{*0}
 
 % Set section numbering to roman numerals
-\renewcommand{\thechapter}{\Roman{chapter}}
-\renewcommand{\thesection}{}
-\renewcommand{\thesubsection}{}
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\Roman{subsection}}
 
 %----------------------------------------------------------------------------------------
 %	COMMANDS
@@ -154,13 +153,13 @@
 %	defined as \examname above so you cite it as \examname
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Using Computer Vision and Volunteer Computing to Analyze Avian Nesting Patterns and Reduce Scientist Workload} % Your thesis title
+\thesistitle{My Thesis Title} % Your thesis title
 %-------------------------------------------------
 \supervisor{Dr. Travis Desell} % Your supervisor's name
 %-------------------------------------------------
 \committeefirst{Dr. Hasaan Reza} % Your first committee member's name
 %-------------------------------------------------
-\committeesecond{Brandon Wild} % Your second committee member's name
+\committeesecond{Prof. Brandon Wild} % Your second committee member's name
 %-------------------------------------------------
 \degree{Master of Science} % Your degree name - this is currently used in the title page and abstract
 %-------------------------------------------------
@@ -393,86 +392,86 @@
 %----------------------------------------------------------------------------------------
 \renewcommand{\contentsname}{Table of Contents} % Rename chapter name for Table of Contents
 
-% \cftsetindents{chapter}{0em}{2.75em}
-\setlength{\cftchapindent}{2.75em}
+% % \cftsetindents{chapter}{0em}{2.75em}
+% % \setlength{\cftchapindent}{2.75em}
 
-\makeatletter
-\let\l@chapterstar\l@chapter
-% \patchcmd{<cmd>}{<search>}{<replace>}{<success>}{<failure>}
-\patchcmd{\l@chapterstar}{\cftchapindent}{\cftchapstarindent}{}{}
-\patchcmd{\l@chapterstar}{\cftchapfont}{\cftchapstarfont}{}{}% Insert starred chapter font
-\patchcmd{\l@chapterstar}{#2}{\cftchapstarpagefont #2}{}{}% Insert starred chapter page number font
-\makeatother
+% \makeatletter
+% \let\l@chapterstar\l@chapter
+% % \patchcmd{<cmd>}{<search>}{<replace>}{<success>}{<failure>}
+% \patchcmd{\l@chapterstar}{\cftchapindent}{\cftchapstarindent}{}{}
+% \patchcmd{\l@chapterstar}{\cftchapfont}{\cftchapstarfont}{}{}% Insert starred chapter font
+% \patchcmd{\l@chapterstar}{#2}{\cftchapstarpagefont #2}{}{}% Insert starred chapter page number font
+% \makeatother
 
-\newcommand{\cftchapstarindent}{0em}
-\newcommand{\cftchapstarfont}{\cftchapfont\itshape}
-\newcommand{\cftchapstarpagefont}{\cftchappagefont\itshape}
+% \newcommand{\cftchapstarindent}{0em}
+% \newcommand{\cftchapstarfont}{\cftchapfont\itshape}
+% \newcommand{\cftchapstarpagefont}{\cftchappagefont\itshape}
 
 
-\renewcommand{\cftparskip}{6pt}
-\renewcommand{\cftchapdotsep}{\cftdotsep}
+% \renewcommand{\cftparskip}{6pt}
+% \renewcommand{\cftchapdotsep}{\cftdotsep}
 
-\renewcommand{\cfttoctitlefont}{\hfill\MakeUppercase}
-\renewcommand{\cftaftertoctitle}{\hfill\mbox{}}
-\renewcommand{\cftaftertoctitleskip}{6pt}
+% \renewcommand{\cfttoctitlefont}{\hfill\MakeUppercase}
+% \renewcommand{\cftaftertoctitle}{\hfill\mbox{}}
+% \renewcommand{\cftaftertoctitleskip}{6pt}
            
-\renewcommand{\cftchapaftersnum}{.}
+% \renewcommand{\cftchapaftersnum}{.}
 
-% \addtocounter{secnumdepth}{1}
-% \setcounter{tocdepth}{6}
-% \renewcommand\tableofcontents{
-% \begin{spacing}{1}{
-%     \setlength{\parskip}{1pt}
-%     \if@twocolumn
-%       \@restonecoltrue\onecolumn
-%     \else
-%       \@restonecolfalse
-%     \fi
-%     \chapter*{\contentsname
-%         \@mkboth{
-%            \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}
-%     \@starttoc{toc}%
-%     \if@restonecol\twocolumn\fi
-% }\end{spacing}
-% }
+\addtocounter{secnumdepth}{1}
+\setcounter{tocdepth}{6}
+\renewcommand\tableofcontents{
+\begin{spacing}{1}{
+    \setlength{\parskip}{1pt}
+    \if@twocolumn
+      \@restonecoltrue\onecolumn
+    \else
+      \@restonecolfalse
+    \fi
+    \chapter*{\contentsname
+        \@mkboth{
+           \MakeUppercase\contentsname}{\MakeUppercase\contentsname}}
+    \@starttoc{toc}
+    \if@restonecol\twocolumn\fi
+}\end{spacing}
+}
 
 %----------------------------------------------------------------------------------------
 %	LIST OF FIGURES
 %----------------------------------------------------------------------------------------
-\cftsetindents{figure}{0em}{2em}
+% \cftsetindents{figure}{0em}{2em}
 
-\renewcommand{\cftloftitlefont}{\hfill\MakeUppercase}
-\renewcommand{\cftafterloftitle}{\hfill\mbox{}\\[\baselineskip]
-	Figure \hfill Page}
-\renewcommand{\cftafterloftitleskip}{6pt}
+% \renewcommand{\cftloftitlefont}{\hfill\MakeUppercase}
+% \renewcommand{\cftafterloftitle}{\hfill\mbox{}\\[\baselineskip]
+% 	Figure \hfill Page}
+% \renewcommand{\cftafterloftitleskip}{6pt}
 
-\renewcommand{\cftfigaftersnum}{.}
+% \renewcommand{\cftfigaftersnum}{.}
 
 
-% \renewcommand\listoffigures{
-%     \setlength{\parskip}{10pt}
-%     \chapter{\listfigurename}
-%     Figure \hfill Page\par
-%     \@starttoc{lof}%
-% }
+\renewcommand\listoffigures{
+    \setlength{\parskip}{10pt}
+    \chapter{\listfigurename}
+    Figure \hfill Page\par
+    \@starttoc{lof}%
+}
 
 %----------------------------------------------------------------------------------------
 %	LIST OF TABLES
 %----------------------------------------------------------------------------------------
-\cftsetindents{table}{0em}{2em}
+% \cftsetindents{table}{0em}{2em}
 
-\renewcommand{\cftlottitlefont}{\hfill\MakeUppercase}
-\renewcommand{\cftafterlottitle}{\hfill\mbox{}\\[\baselineskip]
-	Table \hfill Page}
-\renewcommand{\cftafterlottitleskip}{6pt}
+% \renewcommand{\cftlottitlefont}{\hfill\MakeUppercase}
+% \renewcommand{\cftafterlottitle}{\hfill\mbox{}\\[\baselineskip]
+% 	Table \hfill Page}
+% \renewcommand{\cftafterlottitleskip}{6pt}
 
-\renewcommand{\cfttabaftersnum}{.}
+% \renewcommand{\cfttabaftersnum}{.}
 
 
-% \renewcommand\listoftables{
-%     \setlength{\parskip}{10pt}
-%     \chapter{\listtablename}
-%     Table \hfill Page\par
-%     \@starttoc{lot}%
-% }
+\renewcommand\listoftables{
+    \setlength{\parskip}{10pt}
+    \chapter{\listtablename}
+    Table \hfill Page\par
+    \@starttoc{lot}%
+}
 
