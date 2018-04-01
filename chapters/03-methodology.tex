@@ -5,7 +5,7 @@
 %----------------------------------------
 % PHASE IDENTIFICATION
 %----------------------------------------
-\section{Phase of Flight Identification}
+\section{Phase of Flight Identification} \label{sec:phase_identification}
 
 \note{Not trivial because multiple circuits in a single flight. Lack technology found in commercial aircraft. Flying patterns are highly variable in GA due to flight training.}
 
@@ -23,13 +23,270 @@
             \label{fig:traffic_pattern}
         \end{figure}
         
+        Along with detecting the Approach phase (\Cref{alg:detect_approach}), this section also details the algorithms for detecting \textit{(i)} the airport and runway that the aircraft is approaching and \textit{(ii)} the Final Turn so it can later be analyzed for an undershoot or overshoot.
+        
+        The algorithm for detecting an aircraft's approach needs to iterate through all of the time values since there can be multiple approaches within a single flight.  Once the algorithm detects the aircraft is 1 mile away from an airport and is less than 500 feet above ground level (AGL) (\Cref{alg:detect_approach} Line 6), it is determined that the pilot is beginning an approach and a unique approach identifier is generated in order to store meta-data later in the process.  Next, the algorithm continues to iterate through time values until either the aircraft goes under 200 ft AGL, or it goes back above 500 ft AGL, which will then be recorded as a go-around later in the process (\Cref{alg:detect_approach} Lines 8-12).  If the aircraft goes under 200 ft AGL, then it is determined to be on the final approach.  The aircraft is considered to be on the final approach while it is within 1 mile away from the airport and it is between 50 and 200 feet AGL inclusive (\Cref{alg:detect_approach} Lines 16-22).
+    
+    Once the aircraft either goes above 200 feet AGL or goes below 50 feet AGL, then the final approach is marked as finished, and the critical meta-data associated with the approach is stored.  At this point, the runway that is being approached can be detected using a combination of the aircraft's current geolocation and heading since the intended runway may not be closest to the aircraft depending on the degree of the Final Turn (\Cref{alg:detect_approach} Line 24).
+        
+        %%%%% Detect Approaches Pseudo-code
+        \begin{algorithm}
+            \begin{algorithmic}[1]\raggedright
+            	\State $ \var{airplanePoint} \gets \var{data[i].geoPoint} $
+            	\State $ \var{airport} \gets \var{detectAirport(airplanePoint)} $
+                \State $ \var{airplaneAltitude} \gets \var{data[i].altitude} $
+                \State $ \var{heightAGL} \gets \var{airplaneAltitude} - \var{airport.altitude} $
+                \State $ \var{distance} \gets \var{airplanePoint.distanceTo(airport.geoPoint)} $
+                \If{$ \var{distance} < 1$\,mi and $\var{heightAGL} < 500$\,ft}
+                    \State $ \var{apprID} \gets \var{genNewApproachID()} $
+                    \While{$ 200\,\text{ft} < \var{heightAGL} < 500\,\text{ft} $ and $ \var{i} < \var{data.length} $}
+                        \State $ \var{airplaneAltitude} \gets \var{data[i].altitude} $
+                        \State \var{heightAGL} $ \gets $ \var{airplaneAltitude} $-$ \var{airport.altitude}
+                        \State $ i \gets i + 1 $
+                    \EndWhile
+
+                    \State $ \var{approachStartTime} \gets i $
+                    \State $ \var{airplaneHdg} \gets \var{data[i].hdg} $
+                    \State $ \var{airplanePoint} \gets \var{data[i].geoPoint} $
+
+                    \While{$ \var{distance} < 1$\,mi and $ 50\,\text{ft} \leq \var{heightAGL} \leq 200\,\text{ft} $ and $ \var{i} < \var{data.length} $}
+                        \State $ \var{airplaneAltitude} \gets \var{data[i].altitude} $
+                        \State $ \var{airplanePoint} \gets \var{data[i].geoPoint} $
+                        \State $ \var{distance} \gets \var{airplanePoint.distanceTo(airport.geoPoint)} $
+                        \State $ \var{heightAGL} \gets \var{airplaneAltitude} - \var{airport.altitude} $
+                        \State $ i \gets i + 1 $
+                    \EndWhile
+
+                    \State $ \var{approachEndTime} \gets i $
+                    \State $ \var{runway} \gets $ \var{detectRunway(airplanePoint, airplaneHdg, airport)}
+                    \State \var{approaches[apprID]} $ \gets $ store approach meta-data
+                    \State \Return \var{(approachStartTime, approachEndTime)}
+                \EndIf
+            \end{algorithmic}
+            \caption{Pseudo-code for function which detects when an aircraft is approaching a runway.}
+            \label{alg:detect_approach}
+        \end{algorithm}
+        
+        
+        %----------
+        % AIRPORT DETECTION
+        %----------
+        \subsubsection{Airport detection.} \label{sec:detect_airport}
+        
+        	For identifying the airport that is being approached, a QuadTree~\cite{finkel1974quad} data structure was used.  It was used due to the fact that a two-dimensional tree structure is needed in order to efficiently find the closest airport latitude and longitude point when given the aircraft's latitude and longitude.  The QuadTree is constructed using a list of airport objects from a database then is optimized.  The insertion algorithm yields $\mathcal{O}(n \log n)$ complexity when given random keys, and performs in $\mathcal{O}(\log n)$ time when searching an optimized tree.
+
+
+        %----------
+        % RUNWAY DETECTION
+        %----------
+        \subsubsection{Runway detection.}
+        
+            The algorithm used for finding the runway that is being approached is a simple sequential search with a constraint that the difference between the aircraft's heading and the runway's heading must be within an upper limit.  The reasoning for this constraint is the fact that the runway closest to the aircraft may not necessarily be the one it is approaching depending on the arrangement of the runways and the degree of the Final Turn (see \Cref{fig:traffic_pattern}).  A value of $20^\circ$ was used for the heading constraint since it is double the value used for detecting a heading exceedance (see \Cref{tab:approach_thresholds}).  Thus if the runway returned by the algorithm is not the intended runway, it means the aircraft's heading is significantly off-center from the runway's heading and the pilot will need to perform severe corrections to get back on course.
+            
+            In this case, using a sequential search is efficient enough since an airport has a very small number of runways, whereas there are thousands of airports within the United States which requires a more sophisticated algorithm.  The runway detection algorithm is given in \Cref{alg:detect_runway}.
+
+            %%%%% Detect Runway Pseudo-code
+            \begin{algorithm}
+                \begin{algorithmic}[1]\raggedright
+                    \Function{DetectRunway}{airplanePoint, airplaneHdg, airport}
+                        \State $ \var{theRunway} \gets \textit{NULL} $
+                        \State $ \var{closestDistance} \gets \infty $
+
+                        \For{\var{runway} in \var{airport.runways}}
+                            \If{$ \abs{\var{headingDifference(runway.hdg, airplaneHdg)}} \leq 20^\circ $}
+                                \State $ \var{distance} \gets \var{airplanePoint.distanceTo(runway.geoPoint)} $
+                                \If{$ \var{distance} \le \var{closestDistance} $}
+                                    \State $ \var{theRunway} \gets \var{runway} $
+                                    \State $ \var{closestDifference} \gets \var{difference} $
+                                \EndIf
+                            \EndIf
+                        \EndFor
+
+                        \State \Return{theRunway}
+                    \EndFunction
+                \end{algorithmic}
+                \caption{Pseudo-code for \textit{detectRunway} function which detects the runway an aircraft is approaching.}
+                \label{alg:detect_runway}
+            \end{algorithm}
+        
+        
+        %----------
+        % FINAL TURN DETECTION
+        %----------
+        \subsubsection{Final Turn detection.}
+        
+        	In order to detect the Final Turn subphase of the Approach, we first get the previous three minutes of data before the Approach ends.  The previous three minutes are used to reduce the search space and because it does not make logical sense for a Final Turn to occur greater than three minutes before the Approach ends.  Next, the algorithm searches for the Final Turn start and end time.  It finds these by searching for the points at which the aircraft's heading creates a $90^\circ$ and $15^\circ$ angle, respectively, to the runway's heading.  A visualization of these reference points can be seen in \Cref{fig:final_turn_example}.  The search is performed backwards through the slice of data in order to obtain the last occurrence of each angle difference.  Once both points have been found, they are stored for later use in the analysis stage.  If the aircraft did not have a heading difference greater than $90^\circ$ in the final three minutes, the pilot performed a straight-in approach and, consequently, did not execute the Final Turn subphase.
+        	The Final Turn detection algorithm is given in \Cref{fig:detect_final_turn}.
+            
+            \begin{figure}
+            	\centering
+                \includegraphics[width=\linewidth]{turn_to_final.jpg}
+                \caption{Example showing the Approach subphases and the slice of data used in the Final Turn analysis.  The dashed lines represent when the Final Turn starts ($90^\circ$ heading difference) and ends ($15^\circ$ heading difference).}
+                \label{fig:final_turn_example}
+            \end{figure}
+        
+            %%%%% Detect Final Turn Pseudo-code
+            \begin{algorithm}
+                \begin{algorithmic}[1]\raggedright
+                    \Function{DetectFinalTurn}{approachEndTime, runway}
+                        \State $ \var{last3Mins} \gets $ get previous 3 mins of data before \var{approachEndTime}
+                        \State $ \var{turnStartTime} \gets \textit{NULL} $
+                        \State $ \var{turnStartFound} \gets \textit{false} $
+                        \State $ \var{turnEndTime} \gets \textit{NULL} $
+                        \State $ \var{turnEndFound} \gets \textit{false} $
+                        \State $ \var{i} \gets \var{last3Mins.length} - 1 $
+                        
+                        \Comment Loop backwards through the last 3 mins of data
+                        \While{not \var{turnStartFound} and not \var{turnEndFound} and $\var{i} \geq 0$}
+                        	\State $ \var{headingError} \gets \abs{\var{headingDifference(runway.hdg, last3Mins[i].hdg)}} $
+                            \If{$\var{headingError} \geq 90$ and not \var{turnStartFound}}
+                            	\State $ \var{turnStartTime} \gets \var{i} $
+                                \State $ \var{turnStartFound} \gets \textit{true} $
+                            \EndIf
+                            \If{$\var{headingError} \geq 15$ and not \var{turnEndFound}}
+                            	\State $ \var{turnEndTime} \gets \var{i} $
+                                \State $ \var{turnEndFound} \gets \textit{true} $
+                            \EndIf
+                            
+                            \State $ \var{i} \gets \var{i} - 1 $
+                        \EndWhile
+                        
+                        \State $ \var{approaches[apprID]} \gets $ store final turn meta-data
+                        \State \Return \var{(turnStartTime, turnEndTime)}
+                    \EndFunction
+                \end{algorithmic}
+                \caption{Pseudo-code for function which detects the Final Turn subphase of the Approach.}
+                \label{fig:detect_final_turn}
+            \end{algorithm}
+        
+        
     
     %----------
     % LANDING
     %----------
     \subsection{Landing}
     
-    The Landing phase is defined as the time from the beginning of the landing flare until the aircraft performs one of the following actions: \textit{(i)} exits the landing runway, \textit{(ii)}, comes to a complete stop on the runway (full-stop), or \textit{(iii)} when power is applied for takeoff in the case of a touch-and-go landing~\cite{cictt2013phase}.
+    The Landing phase is defined as the time from the beginning of the landing flare until the aircraft performs one of the following actions: \textit{(i)} exits the landing runway, \textit{(ii)} comes to a complete stop on the runway (full-stop), or \textit{(iii)} when power is applied for takeoff in the case of a touch-and-go landing~\cite{cictt2013phase}.
+    
+    The Landing phase and result detection is able to differentiate between a full-stop, touch-and-go, and a go-around\footnote{Go-around is included here as a possibility for the result of a Landing phase since only one of the full-stop, touch-and-go, and go-around maneuvers can be executed after an Approach/Landing even though the aircraft does not physically contact the ground.}.  Pseudo-code for this process is given in \Cref{alg:detect_landing}.
+    
+    This detection algorithm iterates through time values starting where the final approach analysis finished (\Cref{alg:detect_landing} Lines 10-29).  It continues to iterate while the aircraft is below 500 feet AGL; or if it is the aircraft's final landing and the time values run out, then it stops analyzing.  While the algorithm iterates through the time values, it checks if the aircraft's IAS is less than or equal to 35 knots (\Cref{alg:detect_landing} Line 13).  If this is true, then it is determined the aircraft is no longer traveling at a flying speed, thus it is making a complete stop.  The stall speed of a Cessna 172S aircraft is 40 KIAS~\cite{und_poh}; therefore, the value of 35 knots guarantees the aircraft cannot be flying.  In order to detect a touch-and-go landing, the previous five elevation readings are stored and their average is calculated (\Cref{alg:detect_landing} Lines 20-28).  If it is found the aircraft is not making a stop-and-go landing, then the average elevation for the last five seconds is checked to see if it is less than five feet AGL (\Cref{alg:detect_landing} Line 15).  This means the aircraft is still at a flying speed (above 35 knots) and is also maintaining a stable elevation of five feet or less for at least five seconds.
+    
+    Once the aircraft goes above 500 feet AGL or the time values run out, then the landing result is determined from the conditions found during the analysis (\Cref{alg:detect_landing} Line 32 and \Cref{alg:landing_result_helper}).  If it was found the aircraft was making a complete stop, then a value of `full-stop' is stored.  If it was not making a complete stop and had a relatively stable elevation of 5 feet or less above the runway, then a value of `touch-and-go' is stored.  The final result type, `go-around', is used as a fall-through since there are only three classifications, as mentioned previously.  The three landing result types and how they are detected are summarized in \Cref{tab:landing_types}.
+    
+    After the landing is classified, then it is determined whether there is a Takeoff phase that follows the current Landing phase.  If the end of the data has been reached or a go-around is being performed (\Cref{alg:detect_landing} Line 33), there will not be a subsequent Takeoff phase.  Otherwise, we need to find the transition from Landing to Takeoff.  This is done by finding the index of the minimum RPM value between \textit{landingStartTime} and \textit{landingEndTime} (\Cref{alg:detect_landing} Line 36 and \Cref{alg:last_rpm_helper}).  By using the minimum RPM value, we know all RPM values afterwards will be greater, which means the pilot will be using more throttle in order to takeoff.  The \textit{landingEndTime} is then reset to this transition mark.  Lastly, the critical meta-data found during the analysis is stored.
+    
+    %%%%% Detect Landing Pseudo-code
+   	\begin{algorithm}
+    	\begin{algorithmic}[1]
+        \Function{DetectLanding}{approachEndTime, runway}
+        	\State $ \var{landingStartTime} \gets \var{approachEndTime} $
+        	\State $ \var{i} \gets \var{approachEndTime} $
+        	\State $ \var{airplaneAltitude} \gets \var{data[i].altitude} $
+            \State $ \var{heightAGL} \gets \var{airplaneAltitude} - \var{runway.altitude} $
+            
+            \State $ \var{isFullStop} \gets \textit{false} $
+            \State $ \var{isTouchAndGo} \gets \textit{false} $
+            \State $ \var{elevations} \gets \var{[]}$
+            \State $ \var{avg5SecElevation} \gets 5\,\text{ft} + 1 $
+            	\Comment value to guarantee first check passes
+            
+            \While{$\var{heightAGL} < 500$\,ft and $\var{i} < \var{data.length}$}
+            	\If{not \var{isFullStop}}
+                	\State $ \var{airplaneIAS} \gets \var{data[i].ias} $
+                    \If{$ \var{airplaneIAS} \leq 35$\,kts}
+                    	\State $ \var{isFullStop} \gets \textit{true} $
+                    \ElsIf{$ \var{avg5SecElevation} \leq 5$\,ft}
+                    	\State $ \var{isTouchAndGo} \gets \textit{true} $
+                    \EndIf
+                \EndIf
+                \State $ i \gets i + 1 $
+                \State $ \var{airplaneAltitude} \gets \var{data[i].altitude} $
+                \State $ \var{heightAGL} \gets \var{airplaneAltitude} - \var{runway.altitude} $
+                \If{$ \var{elevations.length} < 5$\,seconds}
+                	\State $ \var{elevations.append(heightAGL)} $
+                \Else
+                	\State $ \var{elevations.pop()} $
+                    \State $ \var{elevations.append(heightAGL)} $
+                    \State $ \var{avg5SecElevation} \gets \var{avg(elevations)} $
+                \EndIf
+            \EndWhile
+            
+            \State $ \var{landingEndTime} \gets \var{i} $
+            \State $ \var{isEndOfData} \gets \var{landingEndTime} == \var{data.length} - 1 $
+            
+            \State $ \var{landingResult} \gets \var{getLandingResult(isFullStop, isTouchAndGo)} $
+         
+            \State $ \var{isFollowedByTakeoff} \gets not (\var{isEndOfData} $ or $ \var{landingType} == \text{`go-around'}) $
+            
+            \Comment{If landing is followed by a takeoff, then we need to find the transition from landing to takeoff}
+            \If{\var{isFollowedByTakeoff}}
+            	\State $ \var{landingDataSlice} \gets $ get slice of data between \var{landingStartTime} and \var{landingEndTime}
+                
+                \Comment{Marks where the pilot is transitioning from landing to takeoff}
+            	\State $ \var{lastOccurrence} \gets \var{getLastOccurrenceOfMinRPM(landingDataSlice)} $
+                \State $ \var{landingEndTime} \gets \var{lastOccurrence} $
+            \EndIf
+            
+            \State $ \var{approaches[apprID]} \gets $ store landing meta-data
+            \State \Return \var{(landingStartTime, landingEndTime)}
+        \EndFunction
+        \end{algorithmic}
+        \caption{Pseudo-code for function which detects the landing from its associated approach.}
+        \label{alg:detect_landing}
+    \end{algorithm}
+    
+    
+    \begin{algorithm}
+    	\begin{algorithmic}[1]
+        	\Function{GetLandingResult}{isFullStop, isTouchAndGo}
+        		\If{\var{isFullStop}}
+                    \State $ \var{landingResult} \gets $ `full-stop'
+                \ElsIf{\var{isTouchAndGo}}
+                    \State $ \var{landingResult} \gets $ `touch-and-go'
+                \Else
+                    \State $ \var{landingResult} \gets $ `go-around'
+                \EndIf
+                \State \Return \var{landingResult}
+            \EndFunction
+        \end{algorithmic}
+        \caption{Pseudo-code for \var{getLandingResult} helper function.}
+        \label{alg:landing_result_helper}
+    \end{algorithm}
+    
+    
+    \begin{algorithm}
+    	\begin{algorithmic}[1]
+        	\Function{GetLastOccurrenceOfMinRPM}{dataSlice}
+        		\State $ \var{minRPM} \gets \var{min(dataSlice[`rpm'])} $
+                \State $ \var{lastOccurrence} \gets 0 $
+                \State $ \var{i} \gets 0 $
+                
+                \While{$\var{i} < \var{dataSlice.length}$} \Comment{loop through slice of data to find last occurrence of minimum RPM}
+                	\If{\var{dataSlice[i].rpm} == \var{minRPM}}
+						\State $ \var{lastOccurrence} \gets \var{i} $
+                    \EndIf
+                \EndWhile
+                \State \Return \var{lastOccurrence}
+            \EndFunction
+        \end{algorithmic}
+        \caption{Pseudo-code for \var{getLastOccurrenceOfMinRPM} helper function.}
+        \label{alg:last_rpm_helper}
+    \end{algorithm}
+    
+    %%%%% Landing Types Table
+    \begin{table}
+        \caption{Landing result types and their conditions.}
+        \label{tab:landing_types}
+        \centering
+        \begin{tabular}{@{} >{\centering\arraybackslash} m{.20\linewidth} m{.70\linewidth} @{}}
+            \hline
+            \bfseries Type & \bfseries Condition \\ \hline
+            full-stop    & Aircraft's indicated airspeed speed (IAS) falls below 35 knots \\ \hline
+            touch-and-go & Aircraft is not making a complete stop and maintains a stable altitude of five feet AGL or less for at least five seconds \\ \hline
+            go-around    & All other cases \\ \hline
+        \end{tabular}
+    \end{table}
     
     
     %----------
@@ -38,18 +295,225 @@
     \subsection{Takeoff}
     
     The Takeoff phase is defined as the time from the application of takeoff power, through rotation, and to an altitude of 35 feet above the runway elevation~\cite{cictt2013phase}.
+    \note{Make note about how I'll be going up to 500 ft since that is the transition from Initial Climb to Cruising Climb for GA.}
     
 
 %----------------------------------------
 % PHASE QUALITY ANALYSIS
 %----------------------------------------
-\section{Phase of Flight Quality Analysis \& Exceedance Detection}
+\section{Phase of Flight Quality Analysis \& Exceedance Detection} \label{sec:phase_quality}
     
     %----------
     % APPROACH
     %----------
 	\subsection{Approach}
-    	\note{Includes turn-to-final, stabilized parameters, self-defined}
+        
+        Along with analyzing the Approach phase, this section also details the algorithms for analyzing \textit{(i)} the Final Turn subphase for an undershoot or overshoot and \textit{(ii)} the pilot's self-defined glide path angle.
+        
+        The algorithm for analyzing an Approach phase iterates through all the time values found during the phase identification stage (\Cref{alg:analyze_approach} Lines 4-17).  For each time value, the analysis for unstableness is performed.  During this analysis, several flight parameters are checked against predetermined thresholds to see if any were exceeded (\Cref{alg:analyze_approach} Lines 8-11).  The values used for the thresholds are summarized in \Cref{tab:approach_thresholds}.  A \textit{true} value for a condition means the parameter is stable.  Thus, if any of the parameters are unstable, \var{isUnstable} will result to being \textit{true}, meaning the entire aircraft is in an unstable state (\Cref{alg:analyze_approach} Line 12).  If the aircraft is found to be unstable, the corresponding time value is stored as well as the parameter values that caused the unstableness (\Cref{alg:analyze_approach} Line 14).
+        
+        %%%%% Exceedance Thresholds Table
+        \begin{table}
+            \caption{\small{Stabilized Approach criteria for Cessna 172S~\cite{und_flight_manual}.}} \label{tab:approach_thresholds}
+            \vspace{3pt}
+            \centering
+            \begin{tabular}{@{} >{\centering\arraybackslash} m{.15\linewidth} >{\raggedright\arraybackslash} m{.3\linewidth} m{.42\linewidth} @{}}
+                \hline\noalign{\smallskip}
+                \bfseries Parameter & \bfseries Description & \bfseries Value \\
+                \noalign{\smallskip}
+                \hline
+                \noalign{\smallskip}
+                F & Flight path correct & Less than 10$^\circ$ off runway heading, less than 50 ft left or right of the runway center line (crosstrack error) \\ \hline
+                L & Landing configuration correct & N.A. \\ \hline
+                A & Airspeed proper & Indicated airspeed (IAS) within 55-75 kts \\ \hline
+                P & Power setting appropriate & N.A. \\ \hline
+                S & Sink rate appropriate & Vertical speed indicated (VSI) does not exceed -1000 ft/min \\ \hline
+            \end{tabular}
+        \end{table}
+        
+        
+        %%%%% Analyze Approach Pseudo-code
+        \begin{algorithm}
+            \begin{algorithmic}[1]\raggedright
+            \Function{AnalyzeApproach}{startTime, endTime, runway}
+                \State $ \var{approachDataSlice} \gets $ get slice of data between \var{startTime} and \var{endTime}
+                \State $ \var{i} \gets 0 $
+                \While{$\var{i} < \var{approachDataSlice.length}$}
+                    \State $ \var{airplaneHdg} \gets \var{approachDataSlice[i].hdg} $
+                    \State $ \var{airplaneIAS} \gets \var{approachDataSlice[i].ias} $
+                    \State $ \var{airplaneVSI} \gets \var{approachDataSlice[i].vsi} $
+                    \State $ \var{airplanePoint} \gets \var{approachDataSlice[i].geoPoint} $
+
+                    \State $ \var{headingIsStable} \gets 180^\circ - \abs{\abs{\var{runway.hdg} - airplaneHdg} - 180^\circ} \leq 20^\circ $
+                    \State $ \var{crossTrackIsStable} \gets \var{calculateCrossTrack(} \break \var{airplanePoint, airplaneHdg, runway)} \leq 50\,\text{ft} $
+                    \State $ \var{iasIsStable} \gets 55\,\text{kts} \leq \var{airplaneIAS} \leq 75\,\text{kts} $
+                    \State $ \var{vsiIsStable} \gets \var{airplaneVSI} \geq -1000\,\text{ft/min} $
+                    \State $ \var{isUnstable} \gets $ not (\var{headingIsStable} and \var{crossTrackIsStable} and \var{iasIsStable} and \var{vsiIsStable})
+
+                    \If{\var{isUnstable}}
+                        \State $ \var{approaches[apprID]} \gets $ store index as unstable and corresponding unstable parameter values
+                    \EndIf
+
+                    \State $ \var{i} \gets \var{i} + 1 $
+                \EndWhile
+            \EndFunction
+            \end{algorithmic}
+            \caption{Pseudo-code for function which analyzes an approach for unstableness.}
+            \label{alg:analyze_approach}
+        \end{algorithm}
+        
+        
+        %----------
+        % Final Turn
+        %----------
+        \subsubsection{Final Turn.}
+        
+        	The Final Turn subphase is very critical for achieving a flight path aligned with the runway.  Since the end of the turn occurs fairly late in the Approach phase, any mistakes can greatly detriment the pilot's ability to be stabilized by 200 ft AGL.  If the pilot makes a turn that is too sharp (undershoot) or too wide (overshoot), they may have to make a large corrective maneuver to re-align themselves, which could stall the aircraft if performed incorrectly and potentially result in a loss of control (LOC).  Stalls and loss of control events contributed to 52.0\% and 17.4\% of all landing accidents in 2017~\cite{kenny201726th}, respectively. 
+            
+            Analyzing this subphase only requires the end time value and runway found during the identification stage.  For this single time value, the aircraft's cross track error is calculated (\Cref{alg:analyze_final_turn} Line 5).  Next, the direction of the turn is determined by calculating which roll attitude direction was greater\footnote{If the aircraft rolls to the left, it is recorded as a negative degree.  Vice versa if the aircraft rolls to the right.  This is why we find the minimum roll attitude as the highest degree in which aircraft rolled left, and the maximum roll attitude as the highest degree in which the aircraft rolled right.} (\Cref{alg:analyze_final_turn} Lines 6-12).  The severity of the cross track error is then determined (\Cref{alg:analyze_final_turn} Lines 13-19).  A Level 1 error is a value greater than 25 feet, while a Level 2 error is a value greater than 100 feet.\todo{Explain why these values were chosen.}{}  The turn error is determined next based on the roll direction and direction of the cross track error (\Cref{alg:analyze_final_turn} Lines 20-36).  For example, if the pilot rolled left and had a negative cross track error\footnote{Meaning they are left of the runway's centerline.}, it is considered an `undershoot'.  See \Cref{tab:final_turn_matrix} for all possible combinations of roll direction and cross track error.  However, if the cross track error is less than a Level 1 risk, then the turn is considered to be `aligned' (\Cref{alg:analyze_final_turn} Line 35).  Lastly, the turn error and severity are stored.  See \Cref{fig:final_turn_examples} for visualizations of several different Final Turn scenarios.
+            
+            If a Final Turn was not found in the detection phase (due to the pilot performing a straight-in approach), the analysis stage will be skipped.
+            
+            
+            \begin{figure}
+            	\centering
+                \subfloat[Aligned.\label{fig:aligned_example}]{
+                	\includegraphics[width=0.29\textwidth]{img/aligned.jpg}
+                }\hfill%
+                \subfloat[Undershoot.  In this case, it is a small severity (Level 1) and color-coded as orange.\label{fig:undershoot_example}]{
+                	\includegraphics[width=0.29\textwidth]{img/undershoot.jpg}
+                }\hfill%
+                \subfloat[Overshoot.  In this case, it is a large severity (Level 2) and color-coded as red.\label{fig:overshoot_example}]{
+                	\includegraphics[width=0.29\textwidth]{img/overshoot.jpg}
+                }%
+                \caption{Examples showing various Final Turn qualities.}
+                \label{fig:final_turn_examples}
+            \end{figure}
+            
+            
+            \begin{table}
+            	\centering
+                \caption{\small{Final Turn matrix of the combinations of roll direction and cross track error.}} \label{tab:final_turn_matrix}
+                \vspace{3pt}
+                \begin{tabular}{|>{\bfseries}c | c c|}
+                	\hline\noalign{\smallskip}
+                    \bfseries \diagbox{Direction}{Cross Track} & \bfseries $\mathbf{< 0}$\,ft & \bfseries $\mathbf{> 0}$\,ft \\
+                    \noalign{\smallskip}
+                    \hline
+                    \noalign{\smallskip}
+                    Left  & Undershoot & Overshoot \\ \hline
+                    Right & Overshoot  & Undershoot \\ \hline
+                \end{tabular}
+            \end{table}
+            
+            
+            %%%%% Analyze Final Turn Pseudo-code
+            \begin{algorithm}
+                \begin{algorithmic}[1]\raggedright
+                \Function{AnalyzeFinalTurn}{startTime, endTime, runway}
+                    \State $ \var{turnDataSlice} \gets $ get slice of data between \var{startTime} and \var{endTime}
+                    \State $ \var{airplaneHdg} \gets \var{turnDataSlice[endTime].hdg} $
+                    \State $ \var{airplanePoint} \gets \var{turnDataSlice[endTime].geoPoint} $
+                    \State $ \var{crossTrackError} \gets \var{calculateCrossTrack(} \break \var{airplanePoint, airplaneHdg, runway)} $
+                    
+                    \State $ \var{leftDirection} \gets \abs{\var{min(turnDataSlice['roll'])}} $
+                    \State $ \var{rightDirection} \gets \abs{\var{max(turnDataSlice['roll'])}} $
+                    \If{$\var{leftDirection} > \var{rightDirection}$}
+                    	\State $ \var{rollDirection} \gets $ `left'
+                    \Else
+                    	\State $ \var{rollDirection} \gets $ `right'
+                    \EndIf
+                    
+                    \If{$\abs{\var{crossTrackError}} > 100$\,ft}   \Comment Level 2
+                    	\State $ \var{severity} \gets $ `large'
+                    \ElsIf{$\abs{\var{crossTrackError}} > 25$\,ft} \Comment Level 1
+                    	\State $ \var{severity} \gets $ `small'
+                    \Else
+                    	\State $ \var{severity} \gets $ \textit{NULL}
+                    \EndIf
+                    
+                    \If{$\var{severity} \neq \textit{NULL}$}
+                    	\If{\var{rollDirection} == `left'}
+                        	\If{$\var{crossTrackError} < 0$}
+                            	\State $ \var{turnError} \gets $ `undershoot'
+                            \Else
+                            	\State $ \var{turnError} \gets $ `overshoot'
+                            \EndIf
+                        \Else
+                        	\If{$\var{crossTrackError} > 0$}
+                            	\State $ \var{turnError} \gets $ `undershoot'
+                            \Else
+                            	\State $ \var{turnError} \gets $ `overshoot'
+                            \EndIf
+                        \EndIf
+                    \Else
+                    	\State $ \var{turnError} \gets $ `aligned'
+                    \EndIf
+                    
+                    \State $ \var{approaches[apprID]} \gets $ store severity and error
+                    
+                    \State \Return \var{(severity, turnError)}
+                \EndFunction
+                \end{algorithmic}
+                \caption{Pseudo-code for function which analyzes the quality of a Final Turn phase.}
+                \label{alg:analyze_final_turn}
+            \end{algorithm}
+        
+        
+        %----------
+        % SELF-DEFINED GLIDE PATH
+        %----------
+        \subsubsection{Self-defined glide path.}
+        
+        	A majority of runways in the U.S. publish an ideal glide slope that all pilot's should adhere to.  However, not all runways have a published glide slope.  Therefore, a method for analyzing the aircraft's actual glide path angle (GPA) during the Final Approach is needed in order for the pilot to be able to see what their average GPA was and how well they adhered to it.  This is why we termed this method a ``self-defined glide path angle''.  \Cref{fig:self_defined_example} shows an example of what the self-defined glide path analysis is performing.
+            
+            Major deviations from the ideal glide slope can be very costly.  For example, if the pilot is approaching at a steep angle, a hard landing or a landing short of the runway can occur.  On the other hand, if the pilot is approaching at a shallow angle, a runway overrun can occur.
+            
+            First, the slice of data for the corresponding Approach phase found during the detection stage is obtained (\Cref{alg:analyze_glide_path} Line 2).  Next, a simple linear regression using the least squares approach is calculated (\Cref{alg:analyze_glide_path} Line 3) using the aircraft's height AGL (dependent variable) over all the time values (independent variable).  From that calculation we obtain the y-intercept, slope, and r-value (correlation coefficient) of the linear regression model (\Cref{alg:analyze_glide_path} Lines 4, 5, 15).  Then, all the necessary values for computing the pilot's defined GPA are calculated (\Cref{alg:analyze_glide_path} Lines 6-13).  Once all the supporting values are found, then the actual GPA is calculated using the $\arctan$ of the predicted vertical distance dropped over the traveled horizontal distance (\Cref{alg:analyze_glide_path} Line 14).  Furthermore, the square of the r-value is calculated (\Cref{alg:analyze_glide_path} Line 16), which explains how well the pilot's glide path ``fit'' the ideal glide path.  Lastly, the calculated values and meta-data are stored
+            
+            
+            \begin{figure}
+            	\centering
+                \includegraphics[width=\linewidth]{img/self_defined_example.jpg}
+                \caption{Example showing the self-defined glide path angle analysis.  This shows a side view of the pilot oscillating about the glide slope during the Approach phase.  The calculation uses a simple linear regression of the aircraft's vertical distance over time fitted using the least squares approach.  The solid line is the aircraft's actual glide path while the dotted line is the ideal glide path.}
+                \label{fig:self_defined_example}
+            \end{figure}
+            
+            
+            %%%%% Analyze Self-Defined Glide Path Pseudo-code
+            \begin{algorithm}
+                \begin{algorithmic}[1]\raggedright
+                \Function{AnalyzeGlidePath}{startTime, endTime, runway}
+                    \State $ \var{approachDataSlice} \gets $ get slice of data between the approach \var{startTime} and \var{endTime}
+                    
+                    \State $ \var{regressionResult} \gets \var{linearRegression(} \break \var{approachDataSlice[`time'], approachDataSlice[`agl'])} $
+                    \State $ \var{yIntercept} \gets \var{regressionResult.intercept} $
+                    \State $ \var{slope} \gets \var{regressionResult.slope} $
+                    
+                    \State $ \var{maxDistance} \gets \var{max(approachDataSlice[`distance'])} $
+                    \State $ \var{minDistance} \gets \var{min(approachDataSlice[`distance'])} $
+                    \State $ \var{horizontalDistance} \gets \var{maxDistance} - \var{minDistance} $
+                    
+                    \State $ \var{maxTime} \gets \var{max(approachDataSlice[`time'])} $
+                    \State $ \var{minTime} \gets \var{min(approachDataSlice[`time'])} $
+                    
+                    \State $ \var{predictedMaxAGL} \gets \var{slope} * \var{maxTime} + \var{yIntercept} $
+                    \State $ \var{predictedMinAGL} \gets \var{slope} * \var{minTime} + \var{yIntercept} $
+                    
+                    \State $ \var{predictedVerticalDistance} \gets \var{predictedMaxAGL} - \var{predictedMinAGL} $
+                    
+                    \State $ \var{actualGlidePathAngle} \gets \var{degrees(} \break \var{atan(predictedVerticalDistance / horizontalDistance))} $
+                    
+                    \State $ \var{pearsonsR} \gets \var{regressionResult.rvalue} $
+                    \State $ \var{rSquared} \gets \var{pearsonsR} * \var{pearsonsR} $
+                    
+                    \State $ \var{approaches[apprID]} \gets $ store self-defined glide path meta-data
+                    \State \Return \var{(actualGlidePathAngle, rSquared)}
+                \EndFunction
+                \end{algorithmic}
+                \caption{Pseudo-code for function which analyzes the quality of the aircraft's glide path angle during the Approach phase.}
+                \label{alg:analyze_glide_path}
+            \end{algorithm}
     
     
     %----------
@@ -57,12 +521,14 @@
     %----------
     \subsection{Landing}
     
+    	\note{Probably am going to remove this section as I don't really do any quality analysis of the Landing phase (only landing type detection as in previous Section).}
+    
     
     %----------
     % TAKEOFF
     %----------
     \subsection{Takeoff}
-    	\note{stabilized parameters}
+    	\note{Insert pseudo-code and description of Takeoff analysis here.}
     
 
 %----------------------------------------
@@ -78,5 +544,5 @@
 %----------------------------------------
 \section{Web Interface}
 
-	\note{Not sure if I'll keep this section here? Might just mention libraries used in Implementation section, then show screenshots in results.}
+	\note{Explain what visualizations the web interface will show and how it will ease manual analysis.}
 

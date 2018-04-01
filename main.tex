@@ -30,38 +30,89 @@
 \graphicspath{{img/}}
 % and their extensions so you won't have to specify these with
 % every instance of \includegraphics
-\DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
 
+\usepackage{algorithm,algpseudocode}
 \usepackage{cleveref}
 \usepackage{url}
 \usepackage{bm}
 \usepackage[detect-all]{siunitx}
-
 \usepackage[obeyFinal]{todonotes}
-
 \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage{diagbox}
 
 \usepackage[square, numbers, comma, sort&compress]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers'
 \hypersetup{urlcolor=blue, colorlinks=true} % Colors hyperlinks in blue - change to black if annoying
 
 \title{\ttitle} % Defines the thesis title - don't touch this
 
-% correct bad hyphenation here // only hypenate where specified
+% correct bad hyphenation here // only hyphenate where specified
 \hyphenation{op-tical net-works semi-conduc-tor}
 
 % Initialize Nomenclature
 \makenomenclature{}
 
 % Custom Commands
-\newcommand\abs[1]{\left|#1\right|}
+\newcommand\abs[1]{\left|\,#1\,\right|}
 \newcommand{\eg}{{\textit e.g.}}
 \newcommand{\ie}{{\textit i.e.}}
 \newcommand{\etal}{{\textit et al.}}
+\newcommand{\var}[1]{\textit{#1}} % For use in algorithmic environments
+\renewcommand{\arraystretch}{1.3} % Increases spacing between rows in tables
 
 \newcommand{\note}[1]{\todo[inline, author={Kelton}]{#1}}
 
 \newcommand{\toolname}{Go-Around Detection Tool}
 \newcommand{\toolnameshort}{GADT}
+
+
+%%%%% Fix to get algorithmic environment to create hanging-indents
+\makeatletter
+\newlength{\continueindent}
+\setlength{\continueindent}{6em}
+
+\renewenvironment{algorithmic}[1][0]%
+   {%
+   \edef\ALG@numberfreq{#1}%
+   \def\@currentlabel{\theALG@line}%
+   %
+   \setcounter{ALG@line}{0}%
+   \setcounter{ALG@rem}{0}%
+   %
+   \let\\\algbreak%
+   %
+   \expandafter\edef\csname ALG@currentblock@\theALG@nested\endcsname{0}%
+   \expandafter\let\csname ALG@currentlifetime@\theALG@nested\endcsname\relax%
+   %
+   \begin{list}%
+      {\ALG@step}%
+      {%
+      \rightmargin\z@%
+      \itemsep\z@ \itemindent\z@ \listparindent2em%
+      \partopsep\z@ \parskip\z@ \parsep\z@%
+      \labelsep 0.5em \topsep 0.2em%\skip 1.2em 
+      \ifthenelse{\equal{#1}{0}}%
+         {\labelwidth 0.5em}%
+         {\labelwidth 1.2em}%
+       \leftmargin\labelwidth \addtolength{\leftmargin}{\labelsep}
+      \ALG@tlm\z@%
+      }%
+      \parshape 2 \leftmargin \linewidth \continueindent \dimexpr\linewidth-\continueindent\relax
+   \setcounter{ALG@nested}{0}%
+   \ALG@beginalgorithmic%
+   }%
+   {% end{algorithmic}
+   % check if all blocks are closed
+   \ALG@closeloops%
+   \expandafter\ifnum\csname ALG@currentblock@\theALG@nested\endcsname=0\relax%
+   \else%
+      \PackageError{algorithmicx}{Some blocks are not closed!!!}{}%
+   \fi%
+   \ALG@endalgorithmic%
+   \end{list}%
+   }%
+\makeatother
+
 
 \begin{document}
 

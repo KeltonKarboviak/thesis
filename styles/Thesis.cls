@@ -113,16 +113,23 @@
 \titlespacing{\chapter}{0pt}{*1}{*0}
 \titleformat{name=\chapter,numberless}[display]{\centering}{}{0pt}{\MakeUppercase{#1}}
 \titlespacing{name=\chapter,numberless}{0pt}{*0}{*0}
+
 \titleformat{\section}[hang]{\centering\bfseries}{}{0pt}{#1}
 \titleformat{name=\section,numberless}[hang]{\bfseries}{}{0pt}{#1}
 %\titlespacing{\section}{0pt}{*0}{*0}
+
 \titleformat{\subsection}[hang]{\bfseries}{}{0pt}{#1}
 \titleformat{name=\subsection,numberless}[hang]{\bfseries}{}{0pt}{#1}
 %\titlespacing{\subsection}{0pt}{*0}{*0}
 
+\titleformat{\subsubsection}[hang]{\bfseries}{}{0pt}{#1}
+\titleformat{name=\subsubsection,numberless}[hang]{\bfseries}{}{0pt}{#1}
+\titlespacing{\subsubsection}{\parindent}{*0}{*0}
+
 % Set section numbering to roman numerals
 \renewcommand{\thesection}{\Roman{section}}
 \renewcommand{\thesubsection}{\thesection.\Roman{subsection}}
+\renewcommand{\thesubsubsection}{\thesubsection.\Roman{subsubsection}}
 
 %----------------------------------------------------------------------------------------
 %	COMMANDS
@@ -153,7 +160,7 @@
 %	defined as \examname above so you cite it as \examname
 %----------------------------------------------------------------------------------------
 
-\thesistitle{My Thesis Title} % Your thesis title
+\thesistitle{Providing Metrics-Based Results to Student Pilots for Critical Phases of General Aviation Flights} % Your thesis title
 %-------------------------------------------------
 \supervisor{Dr. Travis Desell} % Your supervisor's name
 %-------------------------------------------------
