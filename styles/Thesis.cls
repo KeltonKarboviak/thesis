@@ -164,7 +164,7 @@
 %-------------------------------------------------
 \supervisor{Dr. Travis Desell} % Your supervisor's name
 %-------------------------------------------------
-\committeefirst{Dr. Hasaan Reza} % Your first committee member's name
+\committeefirst{Dr. Hassan Reza} % Your first committee member's name
 %-------------------------------------------------
 \committeesecond{Prof. Brandon Wild} % Your second committee member's name
 %-------------------------------------------------
@@ -283,7 +283,7 @@
     \singlespacing
     \thispagestyle{plain}
 
-    This thesis, submitted by \authornames\ in partial fulfillment of the requirements for the Degree of \degreename\ from the \univname, has been read by the Faculty Advisory Committee under whom the work as been done and is hereby approved.
+    This thesis, submitted by \authornames\ in partial fulfillment of the requirements for the Degree of \degreename\ from the \univname, has been read by the Faculty Advisory Committee under whom the work has been done and is hereby approved.
     \bigskip
     \bigskip
     \bigskip
