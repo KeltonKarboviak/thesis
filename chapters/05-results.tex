@@ -15,12 +15,12 @@
 %----------------------------------------
 \section{Accuracy of Phase Identification}
 
-	The manual validation was performed using a combination of tools available on the NGAFID website:  the Cesium flight reanimation tool and the Keyhole Markup Language (KML) generator to visualize the flight path on Google Earth~\cite{nolan2014keyhole} (see \Cref{fig:kml_example}).
+	The manual validation was performed using a combination of tools available on the NGAFID website:  the Cesium flight reanimation tool and the Keyhole Markup Language (KML) generator to visualize the flight path in \textit{Google Earth}~\cite{nolan2014keyhole} (see \Cref{fig:kml_example}).
     
     \begin{figure}
     	\centering
         \includegraphics[width=\linewidth]{img/kml_example}
-        \caption{Example of using a KML file to visualize a flight path in Google Earth.  This flight visualization is an example of a student flight that has multiple final approach phases.}
+        \caption{Example of using a KML file to visualize a flight path in \textit{Google Earth}.  This flight visualization is an example of a student flight that has multiple Approach phases.}
         \label{fig:kml_example}
     \end{figure}
     
@@ -42,14 +42,6 @@
             \caption{Pie chart showing the manual validation results including true positives, false positives, and false negatives.}
             \label{fig:validation_results}
         \end{figure}
-        
-        
-    %----------
-    % TAKEOFF
-    %----------
-    \subsection{Takeoff}
-    
-    	\note{Put in defense for why I did not do manual validation of Takeoffs.}
     
     
 %----------------------------------------
@@ -63,7 +55,7 @@
     %----------
     \subsection{Approach}
     
-    	The results of the application have provided many possibilities for statistical analysis since numerous statistics can be calculated from the generated approach data.  This can be seen in \Cref{subfig:stableness_results,subfig:unstable_landing_results,subfig:unstable_parameters,subfig:landing_type_results} in which a sample of the possible results were calculated from the experiments of the 100 flights used in this research.  With these various results, trends can be found in the data that has been analyzed.  For example, we can see in \Cref{subfig:stableness_results} that out of the 377 approaches in the sample data, 74.27\% (280) were stable and 25.73\% (97) were unstable.  By drilling down into that data, we can see the frequency for each of the landing types for stable and unstable approaches.  Figure~\ref{subfig:landing_type_results} depicts this more detailed information and shows that full-stop landings occur most frequently for both stable and unstable approaches.  This result isn't very surprising for stable approaches; however, it is very undesirable for unstable approaches.  If we look even further into the proportions for unstable approaches alone (\Cref{subfig:unstable_landing_results}), we see that an unstable approach resulted in a go-around only 20.62\% of the time.  This is far lower than the hopeful 100\%, but was expected to be approximately 20\% by our aviation safety experts.  As mentioned previously, this is largely due to pilot misjudgment since all the analyzed flights were piloted by aviation students; meaning they are still learning and are not yet professionals.
+    	The results of the application have provided many possibilities for statistical analysis since numerous statistics can be calculated from the generated approach data.  This can be seen in \Cref{subfig:stableness_results,subfig:unstable_landing_results,subfig:unstable_parameters,subfig:landing_type_results} in which a sample of the possible results were calculated from the experiments of the 100 flights used in this research.  With these various results, trends can be found in the data that has been analyzed.  For example, we can see in \Cref{subfig:stableness_results} that out of the 377 approaches in the sample data, 74.27\% (280) were stable and 25.73\% (97) were unstable.  By drilling down into that data, we can see the frequency for each of the landing types for stable and unstable approaches.  Figure~\ref{subfig:landing_type_results} depicts this more detailed information and shows that full-stop landings occur most frequently for both stable and unstable approaches.  This result is not very surprising for stable approaches; however, it is very undesirable for unstable approaches.  If we look even further into the proportions for unstable approaches alone (\Cref{subfig:unstable_landing_results}), we see that an unstable approach resulted in a go-around only 20.62\% of the time.  This is far lower than the hopeful 100\%, but was expected to be approximately 20\% by our aviation safety experts.  As mentioned previously, this is largely due to pilot misjudgment since all the analyzed flights were piloted by aviation students; meaning they are still learning and are not yet professionals.
     
     When looking at the unstable approaches and the parameters that caused them (\Cref{subfig:unstable_parameters}), additional interesting results can be found.  We found the parameter that was exceeded the most was heading with 52 occurrences.  Heading was not predicted to be the leading cause of unstable approaches, but our safety experts believe the 10$^\circ$ threshold (as defined in \Cref{tab:approach_thresholds}) may be too strict.  Indicated airspeed was the second highest, but was predicted to be the leading cause since it was stated by our aviation safety experts to be a trend for UND's student pilots to be going too fast on final approaches.
     
@@ -123,15 +115,6 @@
         \subsubsection{Self-defined glide path.}
         
         	\note{Not sure.  May remove this section since the Web Interface shows exactly the charts that can be created.}
-    
-    
-    %----------
-    % Takeoff
-    %----------
-    \subsection{Takeoff}
-    
-    	\note{Charts showing how many takeoffs are stable/unstable. Parameters causing unstableness.}
-        \note{Parameter frequency chart.}
 
 
 %----------------------------------------
@@ -174,15 +157,8 @@
         %----------
     	\subsubsection{Absolute heading error less than 10 degrees.}
         
-        
-	%----------
-    % TAKEOFF
-    %----------
-    \subsection{Takeoff}
-        
             
-    
-    
+
 %----------------------------------------
 % GRADING METRICS: RESULTS
 %----------------------------------------
@@ -196,7 +172,7 @@
 %----------------------------------------
 \section{Web Interface}
 
-	This Section details the newly developed web pages for the NGAFID, which dynamically display results based on the user's chosen filters.  At the time of this writing, there have been new tools developed for the Approach, Final Turn, and self-defined analyses.  Each tool will be discussed further in the subsequent Subsections.
+	This Section details the newly developed web pages for the NGAFID, which dynamically display results based on the user's chosen filters.  At the time of this writing, there have been new tools developed for the Approach, Final Turn, and self-defined glide path analyses.  Each tool will be discussed further in the subsequent Subsections.
     
     
     %----------

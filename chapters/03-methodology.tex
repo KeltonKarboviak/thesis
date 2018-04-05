@@ -1,6 +1,6 @@
 \chapter{Methodology} \label{ch:methodology}
 
-	The \toolname\ provides several features: \textit{(i)} phase of flight identification, \textit{(ii)} quality analysis of each phase, \textit{(iii)} grade assignment, and \textit{(iv)} a web interface to display results.  Since there are three separate phases of concern, there will be a separate subsection for each in both identification and quality analysis.  These features are discussed in more detail in the rest of this chapter.
+	The \toolname\ provides several features: \textit{(i)} phase of flight identification, \textit{(ii)} quality analysis of each phase, \textit{(iii)} grade assignment, and \textit{(iv)} a web interface to display results.  Since there are three separate phases of concern, there will be a separate subsection for each in both identification and quality analysis.  These features are discussed in more detail in the rest of this Chapter.
 
 %----------------------------------------
 % PHASE IDENTIFICATION
@@ -172,7 +172,7 @@
     
     This detection algorithm iterates through time values starting where the final approach analysis finished (\Cref{alg:detect_landing} Lines 10-29).  It continues to iterate while the aircraft is below 500 feet AGL; or if it is the aircraft's final landing and the time values run out, then it stops analyzing.  While the algorithm iterates through the time values, it checks if the aircraft's IAS is less than or equal to 35 knots (\Cref{alg:detect_landing} Line 13).  If this is true, then it is determined the aircraft is no longer traveling at a flying speed, thus it is making a complete stop.  The stall speed of a Cessna 172S aircraft is 40 KIAS~\cite{und_poh}; therefore, the value of 35 knots guarantees the aircraft cannot be flying.  In order to detect a touch-and-go landing, the previous five elevation readings are stored and their average is calculated (\Cref{alg:detect_landing} Lines 20-28).  If it is found the aircraft is not making a stop-and-go landing, then the average elevation for the last five seconds is checked to see if it is less than five feet AGL (\Cref{alg:detect_landing} Line 15).  This means the aircraft is still at a flying speed (above 35 knots) and is also maintaining a stable elevation of five feet or less for at least five seconds.
     
-    Once the aircraft goes above 500 feet AGL or the time values run out, then the landing result is determined from the conditions found during the analysis (\Cref{alg:detect_landing} Line 32 and \Cref{alg:landing_result_helper}).  If it was found the aircraft was making a complete stop, then a value of `full-stop' is stored.  If it was not making a complete stop and had a relatively stable elevation of 5 feet or less above the runway, then a value of `touch-and-go' is stored.  The final result type, `go-around', is used as a fall-through since there are only three classifications, as mentioned previously.  The three landing result types and how they are detected are summarized in \Cref{tab:landing_types}.
+    Once the aircraft goes above 500 feet AGL or the time values run out, then the landing result is determined from the conditions found during the analysis (\Cref{alg:detect_landing} Line 32 and \Cref{alg:landing_result_helper}).  If it was found the aircraft was making a complete stop, then a value of ``full-stop'' is stored.  If it was not making a complete stop and had a relatively stable elevation of 5 feet or less above the runway, then a value of ``touch-and-go'' is stored.  The final result type, ``go-around'', is used as a fall-through since there are only three classifications, as mentioned previously.  The three landing result types and how they are detected are summarized in \Cref{tab:landing_types}.
     
     After the landing is classified, then it is determined whether there is a Takeoff phase that follows the current Landing phase.  If the end of the data has been reached or a go-around is being performed (\Cref{alg:detect_landing} Line 33), there will not be a subsequent Takeoff phase.  Otherwise, we need to find the transition from Landing to Takeoff.  This is done by finding the index of the minimum RPM value between \textit{landingStartTime} and \textit{landingEndTime} (\Cref{alg:detect_landing} Line 36 and \Cref{alg:last_rpm_helper}).  By using the minimum RPM value, we know all RPM values afterwards will be greater, which means the pilot will be using more throttle in order to takeoff.  The \textit{landingEndTime} is then reset to this transition mark.  Lastly, the critical meta-data found during the analysis is stored.
     
@@ -276,10 +276,11 @@
     
     %%%%% Landing Types Table
     \begin{table}
-        \caption{Landing result types and their conditions.}
+        \caption{\small{Landing result types and their conditions.}}
         \label{tab:landing_types}
+        \vspace{3pt}
         \centering
-        \begin{tabular}{@{} >{\centering\arraybackslash} m{.20\linewidth} m{.70\linewidth} @{}}
+        \begin{tabular}{@{} c m{.70\linewidth} @{}}
             \hline
             \bfseries Type & \bfseries Condition \\ \hline
             full-stop    & Aircraft's indicated airspeed speed (IAS) falls below 35 knots \\ \hline
@@ -287,15 +288,6 @@
             go-around    & All other cases \\ \hline
         \end{tabular}
     \end{table}
-    
-    
-    %----------
-    % TAKEOFF
-    %----------
-    \subsection{Takeoff}
-    
-    The Takeoff phase is defined as the time from the application of takeoff power, through rotation, and to an altitude of 35 feet above the runway elevation~\cite{cictt2013phase}.
-    \note{Make note about how I'll be going up to 500 ft since that is the transition from Initial Climb to Cruising Climb for GA.}
     
 
 %----------------------------------------
@@ -317,13 +309,13 @@
             \caption{\small{Stabilized Approach criteria for Cessna 172S~\cite{und_flight_manual}.}} \label{tab:approach_thresholds}
             \vspace{3pt}
             \centering
-            \begin{tabular}{@{} >{\centering\arraybackslash} m{.15\linewidth} >{\raggedright\arraybackslash} m{.3\linewidth} m{.42\linewidth} @{}}
+            \begin{tabular}{@{} c >{\raggedright\arraybackslash} m{.3\linewidth} m{.42\linewidth} @{}}
                 \hline\noalign{\smallskip}
                 \bfseries Parameter & \bfseries Description & \bfseries Value \\
                 \noalign{\smallskip}
                 \hline
                 \noalign{\smallskip}
-                F & Flight path correct & Less than 10$^\circ$ off runway heading, less than 50 ft left or right of the runway center line (crosstrack error) \\ \hline
+                F & Flight path correct & Less than 10$^\circ$ off runway heading, less than 50 ft left or right of the runway center line (cross track error) \\ \hline
                 L & Landing configuration correct & N.A. \\ \hline
                 A & Airspeed proper & Indicated airspeed (IAS) within 55-75 kts \\ \hline
                 P & Power setting appropriate & N.A. \\ \hline
@@ -370,7 +362,7 @@
         
         	The Final Turn subphase is very critical for achieving a flight path aligned with the runway.  Since the end of the turn occurs fairly late in the Approach phase, any mistakes can greatly detriment the pilot's ability to be stabilized by 200 ft AGL.  If the pilot makes a turn that is too sharp (undershoot) or too wide (overshoot), they may have to make a large corrective maneuver to re-align themselves, which could stall the aircraft if performed incorrectly and potentially result in a loss of control (LOC).  Stalls and loss of control events contributed to 52.0\% and 17.4\% of all landing accidents in 2017~\cite{kenny201726th}, respectively. 
             
-            Analyzing this subphase only requires the end time value and runway found during the identification stage.  For this single time value, the aircraft's cross track error is calculated (\Cref{alg:analyze_final_turn} Line 5).  Next, the direction of the turn is determined by calculating which roll attitude direction was greater\footnote{If the aircraft rolls to the left, it is recorded as a negative degree.  Vice versa if the aircraft rolls to the right.  This is why we find the minimum roll attitude as the highest degree in which aircraft rolled left, and the maximum roll attitude as the highest degree in which the aircraft rolled right.} (\Cref{alg:analyze_final_turn} Lines 6-12).  The severity of the cross track error is then determined (\Cref{alg:analyze_final_turn} Lines 13-19).  A Level 1 error is a value greater than 25 feet, while a Level 2 error is a value greater than 100 feet.\todo{Explain why these values were chosen.}{}  The turn error is determined next based on the roll direction and direction of the cross track error (\Cref{alg:analyze_final_turn} Lines 20-36).  For example, if the pilot rolled left and had a negative cross track error\footnote{Meaning they are left of the runway's centerline.}, it is considered an `undershoot'.  See \Cref{tab:final_turn_matrix} for all possible combinations of roll direction and cross track error.  However, if the cross track error is less than a Level 1 risk, then the turn is considered to be `aligned' (\Cref{alg:analyze_final_turn} Line 35).  Lastly, the turn error and severity are stored.  See \Cref{fig:final_turn_examples} for visualizations of several different Final Turn scenarios.
+            Analyzing this subphase only requires the end time value and runway found during the identification stage.  For this single time value, the aircraft's cross track error is calculated (\Cref{alg:analyze_final_turn} Line 5).  Next, the direction of the turn is determined by calculating which roll attitude direction was greater\footnote{If the aircraft rolls to the left, it is recorded as a negative degree.  Vice versa if the aircraft rolls to the right.  This is why we find the minimum roll attitude as the highest degree in which aircraft rolled left, and the maximum roll attitude as the highest degree in which the aircraft rolled right.} (\Cref{alg:analyze_final_turn} Lines 6-12).  The severity of the cross track error is then determined (\Cref{alg:analyze_final_turn} Lines 13-19).  A Level 1 error is a value greater than 25 feet, while a Level 2 error is a value greater than 100 feet.\todo{Explain why these values were chosen.}{}  The turn error is determined next based on the roll direction and direction of the cross track error (\Cref{alg:analyze_final_turn} Lines 20-36).  For example, if the pilot rolled left and had a negative cross track error\footnote{Meaning they are left of the runway's centerline.}, it is considered an ``undershoot''.  See \Cref{tab:final_turn_matrix} for all possible combinations of roll direction and cross track error.  However, if the cross track error is less than a Level 1 risk, then the turn is considered to be ``aligned'' (\Cref{alg:analyze_final_turn} Line 35).  Lastly, the turn error and severity are stored.  See \Cref{fig:final_turn_examples} for visualizations of several different Final Turn scenarios.
             
             If a Final Turn was not found in the detection phase (due to the pilot performing a straight-in approach), the analysis stage will be skipped.
             
@@ -414,8 +406,8 @@
                     \State $ \var{airplanePoint} \gets \var{turnDataSlice[endTime].geoPoint} $
                     \State $ \var{crossTrackError} \gets \var{calculateCrossTrack(} \break \var{airplanePoint, airplaneHdg, runway)} $
                     
-                    \State $ \var{leftDirection} \gets \abs{\var{min(turnDataSlice['roll'])}} $
-                    \State $ \var{rightDirection} \gets \abs{\var{max(turnDataSlice['roll'])}} $
+                    \State $ \var{leftDirection} \gets \abs{\var{min(turnDataSlice[`roll'])}} $
+                    \State $ \var{rightDirection} \gets \abs{\var{max(turnDataSlice[`roll'])}} $
                     \If{$\var{leftDirection} > \var{rightDirection}$}
                     	\State $ \var{rollDirection} \gets $ `left'
                     \Else
@@ -521,26 +513,21 @@
     
     	\note{Probably am going to remove this section as I don't really do any quality analysis of the Landing phase (only landing type detection as in previous Section).}
     
-    
-    %----------
-    % TAKEOFF
-    %----------
-    \subsection{Takeoff}
-    	\note{Insert pseudo-code and description of Takeoff analysis here.}
-    
 
 %----------------------------------------
 % GRADING METRICS
 %----------------------------------------
 \section{Grading Metrics}
-
-	\note{previous expert knowledge, how do different possible error metrics overlap?, use standard deviations?}
+    
+    When creating the risk level metrics to be used for grading the Approach analysis data, we wanted to ensure they were backed by statistics obtained from the results from the sample set of flights.  Towards that goal, the risk level metrics have been created from the data found during the Approach quality analysis.  For each parameter of concern, the recorded values across all Approach phases in the sample set were used to create a normalized histogram showing the probability density of each value range.  From these histograms, the mean and standard deviation were calculated in order to create a best-fit line to overlay the histogram.  The charts were then analyzed by an aviation statistics expert at the University of North Dakota who gave his opinion on reasonable values to use for Risk Level 1 and 2 value ranges based on each mean, standard deviation, and best-fit line.  Even though those elements were created from the analysis statistics, the aviation expert wanted to also ensure the ``safe value ranges'' (Risk Level 0) did not conflict with the values published in UND's standardization manual~\cite{und_flight_manual} and the Cessna C172S Pilot's Operating Handbook (POH)~\cite{und_poh}.
+    
+    After the risk level metrics have been established, the Approach quality analysis results will be re-processed and graded according to the metrics.  The specific details of the grading results from using the risk level metrics will be discussed further in \Cref{ch:results}.
     
     
 %----------------------------------------
 % WEB INTERFACE
 %----------------------------------------
 \section{Web Interface}
-
-	\note{Explain what visualizations the web interface will show and how it will ease manual analysis.}
+    
+    New web visualization tools were developed to display the results generated by the \toolname.  There is a separate tool created for the Approach, Final Turn, and self-defined glide path analyses.  Since the generated results can create numerous data-points for trend analysis, only the most useful charts will be implemented to begin with.  Each visualization will utilize AJAX\footnote{Asynchronous JavaScript and XML} to dynamically and asynchronously load the corresponding results from the back-end server.  This will allow a user to quickly change their given inputs and receive an updated display with a minimal amount of wait time.  New visualizations can be easily created in the future for different purposes since all of the front-end displays are modular from the generated data stored in the database.
 
