@@ -30,7 +30,15 @@
     %----------
     \subsection{Approach}
     
-        The \toolname\ generated a total of 377 approaches for the 100 flights that were tested. As seen in \Cref{fig:kml_example}, student flights typically consist of multiple approaches as this is something that needs to be practiced.  Out of the total; there are 370 (98.14\%) true positives, five (1.33\%) false positives, and two (0.53\%) false negatives.  These results can also be found in \Cref{fig:validation_results}.  In the context of this application, a true positive is a case where the tool correctly indicates that an approach is occurring during a specified time frame.  A false positive occurs when the tool indicates that an approach is occurring but is not in reality.  Typically, a false positive occurs when the flight data has invalid values for about the first ten rows, which then throws off the beginning of the algorithms.  This happens infrequently, but could be accounted for in a future work by sanitizing the data before analysis.  A false negative is the exact opposite where the tool indicates that an approach is not occurring but it is in reality.  Typically, a false negative occurs when the approached airport's geological data is not contained within the database.  These types of occurrences should stop once the airports database is expanded with more entries.  Lastly, the tool misclassified the approached runway 13 times (3.45\%).  A runway is misclassified when the difference between the aircraft and runway headings is greater than $20^\circ$.  This occurs during the runway detection portion of the approach analysis algorithm, and the algorithm either returns a \emph{null} runway or an incorrect runway due to the large heading difference.
+        The \toolname\ generated a total of 380 approaches for the 100 flights that were tested. As seen in \Cref{fig:kml_example}, student flights typically consist of multiple approaches as this is something that needs to be practiced.  Out of the total; there are 3730 (98.16\%) true positives, five (1.32\%) false positives, and two (0.53\%) false negatives.  These results can also be found in \Cref{fig:validation_results}.
+        
+        In the context of this application, a true positive is a case where the tool correctly indicates that an approach is occurring during a specified time frame.
+        
+        A false positive occurs when the tool indicates that an approach is occurring but is not in reality.  Typically, a false positive occurs when the flight data has invalid values for about the first ten rows, which then throws off the beginning of the algorithms.  This happens infrequently, but could be accounted for in a future work by sanitizing the data before analysis.
+        
+        A false negative is the exact opposite where the tool indicates that an approach is not occurring but it is in reality.  Typically, a false negative occurs when the approached runway's geological data is not contained within the database.  These types of occurrences should stop once the airport and runway databases are expanded with more entries.
+        
+        The tool misclassified the approached runway 13 times (3.42\%).  A runway is misclassified when the difference between the aircraft and runway headings is greater than $20^\circ$.  This occurs during the runway detection portion of the approach analysis algorithm, and the algorithm either returns a \emph{null} runway or an incorrect runway due to the large heading difference.  Lastly, there was a total of 42 (11.05\%) approaches that were given a \textit{null} runway.  This number overlaps with some of the 13 misclassifications, while the rest are due to a lack of runway information as mentioned previously.
 
         In this same context, it is difficult to quantify the number of true negatives since these would be cases where the tool correctly indicates that an approach is not occurring.  The difficulty lies in how to define a single occurrence.  Should a single true negative be counted for every second the tool indicates that an approach is not occurring?  If so, then this would create a numerous amount of true negatives and would dilute the percentages of the other statistics, which are more important in this application.
 
@@ -38,7 +46,7 @@
 
         \begin{figure}
             \centering
-            \includegraphics[width=0.5\linewidth]{img/validation_results}
+            \includegraphics[width=0.75\linewidth]{validation_results}
             \caption{Pie chart showing the manual validation results including true positives, false positives, and false negatives.}
             \label{fig:validation_results}
         \end{figure}
@@ -55,24 +63,24 @@
     %----------
     \subsection{Approach}
     
-    	The results of the application have provided many possibilities for statistical analysis since numerous statistics can be calculated from the generated approach data.  This can be seen in \Cref{subfig:stableness_results,subfig:unstable_landing_results,subfig:unstable_parameters,subfig:landing_type_results} in which a sample of the possible results were calculated from the experiments of the 100 flights used in this research.  With these various results, trends can be found in the data that has been analyzed.  For example, we can see in \Cref{subfig:stableness_results} that out of the 377 approaches in the sample data, 74.27\% (280) were stable and 25.73\% (97) were unstable.  By drilling down into that data, we can see the frequency for each of the landing types for stable and unstable approaches.  Figure~\ref{subfig:landing_type_results} depicts this more detailed information and shows that full-stop landings occur most frequently for both stable and unstable approaches.  This result is not very surprising for stable approaches; however, it is very undesirable for unstable approaches.  If we look even further into the proportions for unstable approaches alone (\Cref{subfig:unstable_landing_results}), we see that an unstable approach resulted in a go-around only 20.62\% of the time.  This is far lower than the hopeful 100\%, but was expected to be approximately 20\% by our aviation safety experts.  As mentioned previously, this is largely due to pilot misjudgment since all the analyzed flights were piloted by aviation students; meaning they are still learning and are not yet professionals.
+    	The results of the application have provided many possibilities for statistical analysis since numerous statistics can be calculated from the generated approach data.  This can be seen in \Cref{subfig:stableness_results,subfig:unstable_landing_results,subfig:unstable_parameters,subfig:landing_type_results} in which a sample of the possible results were calculated from the experiments of the 100 flights used in this research.  With these various results, trends can be found in the data that has been analyzed.  For example, we can see in \Cref{subfig:stableness_results} that out of the 380 approaches in the sample data, 57.11\% (217) were stable and 42.89\% (163) were unstable.  By drilling down into that data, we can see the frequency for each of the landing types for stable and unstable approaches.  \Cref{subfig:landing_type_results} depicts this more detailed information and shows that full-stop landings occur most frequently for both stable and unstable approaches.  This result is not very surprising for stable approaches; however, it is very undesirable for unstable approaches.  If we look even further into the proportions for unstable approaches alone (\Cref{subfig:unstable_landing_results}), we see that an unstable approach resulted in a go-around only 34.97\% of the time.  This is far lower than the hopeful 100\%, but was expected to be approximately 20\% by our aviation safety experts.  As mentioned previously, this is largely due to pilot misjudgment since all the analyzed flights were piloted by aviation students; meaning they are still learning and are not yet professionals.
     
-    When looking at the unstable approaches and the parameters that caused them (\Cref{subfig:unstable_parameters}), additional interesting results can be found.  We found the parameter that was exceeded the most was heading with 52 occurrences.  Heading was not predicted to be the leading cause of unstable approaches, but our safety experts believe the 10$^\circ$ threshold (as defined in \Cref{tab:approach_thresholds}) may be too strict.  Indicated airspeed was the second highest, but was predicted to be the leading cause since it was stated by our aviation safety experts to be a trend for UND's student pilots to be going too fast on final approaches.
+    When looking at the unstable approaches and the parameters that caused them (\Cref{subfig:unstable_parameters}), additional interesting results can be found.  We found the parameter that was exceeded the most was heading with 91 occurrences.  Heading was not predicted to be the leading cause of unstable approaches, but our safety experts believe the 10$^\circ$ threshold (as defined in \Cref{tab:approach_thresholds}) may be too strict.  Indicated airspeed was the second highest, but was predicted to be the leading cause since it was stated by our aviation safety experts to be a trend for UND's student pilots to be going too fast on final approaches.
     
     \begin{figure}
     	\centering
         \subfloat[Pie chart showing the number of stable approaches compared to the number of unstable approaches.\label{subfig:stableness_results}]{
-        	\includegraphics[width=0.45\linewidth]{img/stableness_results}
+        	\includegraphics[width=0.45\linewidth]{stableness_results}
         }\hfill%
         \subfloat[Frequency of the occurrences of each landing type for stable and unstable approaches.\label{subfig:landing_type_results}]{
-        	\includegraphics[width=0.45\linewidth]{img/landing_type_results}
+        	\includegraphics[width=0.45\linewidth]{landing_type_results}
         }%
         
         \subfloat[Pie chart comparing the number of occurrences for each landing type after an unstable approach.\label{subfig:unstable_landing_results}]{
         	\includegraphics[width=0.45\linewidth]{img/unstable_approach_landing_results}
         }\hfill%
         \subfloat[Frequency of parameters that caused an aircraft to be unstable during an approach.  Note that a single approach can have multiple unstable parameters, which causes the sum of the occurrences to not equal the total number of unstable approaches.\label{subfig:unstable_parameters}]{
-        	\includegraphics[width=0.45\linewidth]{img/unstable_parameter_results}
+        	\includegraphics[width=0.45\linewidth]{unstable_parameter_results}
         }%
         \caption{Sample set of the statistics and trends that can be found from the automated analysis results.}
         \label{fig:example_statistics}
@@ -106,15 +114,31 @@
         %----------
         \subsubsection{Final Turn.}
         
-        	\note{Insert charts showing the number of small/large under/overshoots.}
+        	Out of the 380 detected approaches; 262 (68.95\%) had a Final Turn subphase, 76 (20.00\%) performed a straight-in approach, and 42 (11.05\%) were not able to detect the runway and, therefore, could not detect whether a Final Turn was performed.  \Cref{fig:final_turn_results_ratios} depicts these ratios.  As mentioned earlier, the 42 \textit{null} runways will be drastically reduced in the future once additional airports and runways are added to the geological database.  Once the airport and runway databases are more complete, the runway error rate should become much more acceptable.
+            
+            \Cref{fig:final_turn_results_by_risk} gives a comparison of the number of occurrences for each turn error type and Risk Level classification.  This graph is displaying the subset of 262 detected Final Turn subphases found in \Cref{fig:final_turn_results_ratios}.  The figure shows that 76.34\% of the Final Turns resulted in an undershoot and a large proportion (45.420\%) resulted in a Risk Level 2 undershoot.  Those statistics are definitely interesting and are an example of an anomaly that is worth looking into by an aviation expert.  One explanation could be that there is frequently a strong wind component against the aircraft, which could cause the numerous undershoots.  Further analysis such as this could be performed as a future work since wind and other meteorological factors were not taken into consideration in the analyses within this research.
+            
+            \begin{figure}
+            	\centering
+                \includegraphics[width=0.75\linewidth]{final_turn_detection_results}
+                \caption{Pie chart showing the results from the Final Turn detection algorithm.}
+                \label{fig:final_turn_results_ratios}
+            \end{figure}
+            
+            \begin{figure}
+            	\centering
+                \includegraphics[width=0.95\linewidth]{final_turn_results_by_risk}
+                \caption{Frequency of the occurrences of each turn error type for Risk Levels 0, 1, and 2.}
+                \label{fig:final_turn_results_by_risk}
+            \end{figure}
             
         
         %----------
-        % APPROACH
+        % SELF-DEFINED GLIDE PATH
         %----------
-        \subsubsection{Self-defined glide path.}
+%         \subsubsection{Self-defined glide path.}
         
-        	\note{Not sure.  May remove this section since the Web Interface shows exactly the charts that can be created.}
+%         	\note{Not sure.  May remove this section since the Web Interface shows exactly the charts that can be created.}
 
 
 %----------------------------------------
@@ -122,41 +146,68 @@
 %----------------------------------------
 \section{Grading Metrics:  Define From Parameter Frequencies}
 
+	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the Approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.
+
+
 	%----------
     % APPROACH
     %----------
-    \subsection{Approach}
+%     \subsection{Approach}
     
     	
-        %----------
-        % IAS
-        %----------
-    	\subsubsection{Indicated airspeed between 55 and 75 knots.}
+    %----------
+    % IAS
+    %----------
+    \subsection{Indicated Airspeed Between 55 and 75 knots}
+
+		\begin{figure}
+			\centering
+            \includegraphics[width=\linewidth]{revised_ias_hist}
+            \caption{Histogram for indicated airspeed ($\mu = 64.401, \sigma = 4.535$).  The safe range is between 61 and 66 knots.  There is no lower Risk Level 1 since the Risk Level 2 is anything less than 61 knots.  The higher Risk Level 1 range is between 66 and 71 knots, and the Risk Level 2 is anything greater than 71 knots.}
+            \label{fig:revised_ias_hist}
+		\end{figure}
+
+
+
+    %----------
+    % VSI
+    %----------
+    \subsection{Vertical Speed Indicated Greater Than -1000 ft/min}
+
+		\begin{figure}
+			\centering
+            \includegraphics[width=\linewidth]{revised_vsi_hist}
+            \caption{Histogram for vertical speed indicated ($\mu = -364.528, \sigma = 181.210$).  The safe range is between -800 and -500 ft/min.  The lower Risk Level 1 range is between -1000 and -800 ft/min, and the Risk Level 2 is anything less than -1000 ft/min.  The higher Risk Level 1 range is between -500 and -250 ft/min, and the Risk Level 2 is anything greater than -250 ft/min.}
+            \label{fig:revised_vsi_hist}
+		\end{figure}
+
+
+
+    %----------
+    % CROSS TRACK ERROR
+    %----------
+    \subsection{Absolute Cross Track Error Less Than 50 ft}
+
+		\begin{figure}
+			\centering
+            \includegraphics[width=\linewidth]{revised_cross_track_hist}
+            \caption{Histogram for cross track error ($\mu = -4.542, \sigma = 15.499$).  The safe range is between -40 and 40 ft.  The lower Risk Level 1 range is between -50 and -40 ft, and the Risk Level 2 is anything less than -50 ft.  The higher Risk Level 1 range is between 40 and 50 ft, and the Risk Level 2 is anything greater than 50 ft.}
+            \label{fig:revised_cross_track_hist}
+		\end{figure}
+
+
+
+    %----------
+    % HEADING ERROR
+    %----------
+    \subsection{Absolute Heading Error Less Than 10 degrees}
         
-            
-        
-        
-        %----------
-        % VSI
-        %----------
-    	\subsubsection{Vertical speed indicated greater than -1000 ft/min.}
-        
-            
-        
-        
-        %----------
-        % CROSS TRACK ERROR
-        %----------
-    	\subsubsection{Absolute cross track error less than 50 ft.}
-        
-            
-            
-            
-        %----------
-        % HEADING ERROR
-        %----------
-    	\subsubsection{Absolute heading error less than 10 degrees.}
-        
+        \begin{figure}
+			\centering
+            \includegraphics[width=\linewidth]{revised_heading_hist}
+            \caption{Histogram for heading error ($\mu = 1.958, \sigma = 4.761$).  The safe range is between -15 and 15 degrees.  The lower Risk Level 1 range is between -20 and -15 degrees, and the Risk Level 2 is anything less than -20 degrees.  The higher Risk Level 1 is between 15 and 20 degrees, and the Risk Level 2 is anything greater than 20 degrees.}
+            \label{fig:revised_heading_hist}
+		\end{figure}
             
 
 %----------------------------------------

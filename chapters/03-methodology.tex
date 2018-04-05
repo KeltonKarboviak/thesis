@@ -362,7 +362,7 @@
         
         	The Final Turn subphase is very critical for achieving a flight path aligned with the runway.  Since the end of the turn occurs fairly late in the Approach phase, any mistakes can greatly detriment the pilot's ability to be stabilized by 200 ft AGL.  If the pilot makes a turn that is too sharp (undershoot) or too wide (overshoot), they may have to make a large corrective maneuver to re-align themselves, which could stall the aircraft if performed incorrectly and potentially result in a loss of control (LOC).  Stalls and loss of control events contributed to 52.0\% and 17.4\% of all landing accidents in 2017~\cite{kenny201726th}, respectively. 
             
-            Analyzing this subphase only requires the end time value and runway found during the identification stage.  For this single time value, the aircraft's cross track error is calculated (\Cref{alg:analyze_final_turn} Line 5).  Next, the direction of the turn is determined by calculating which roll attitude direction was greater\footnote{If the aircraft rolls to the left, it is recorded as a negative degree.  Vice versa if the aircraft rolls to the right.  This is why we find the minimum roll attitude as the highest degree in which aircraft rolled left, and the maximum roll attitude as the highest degree in which the aircraft rolled right.} (\Cref{alg:analyze_final_turn} Lines 6-12).  The severity of the cross track error is then determined (\Cref{alg:analyze_final_turn} Lines 13-19).  A Level 1 error is a value greater than 25 feet, while a Level 2 error is a value greater than 100 feet.\todo{Explain why these values were chosen.}{}  The turn error is determined next based on the roll direction and direction of the cross track error (\Cref{alg:analyze_final_turn} Lines 20-36).  For example, if the pilot rolled left and had a negative cross track error\footnote{Meaning they are left of the runway's centerline.}, it is considered an ``undershoot''.  See \Cref{tab:final_turn_matrix} for all possible combinations of roll direction and cross track error.  However, if the cross track error is less than a Level 1 risk, then the turn is considered to be ``aligned'' (\Cref{alg:analyze_final_turn} Line 35).  Lastly, the turn error and severity are stored.  See \Cref{fig:final_turn_examples} for visualizations of several different Final Turn scenarios.
+            Analyzing this subphase only requires the end time value and runway found during the identification stage.  For this single time value, the aircraft's cross track error is calculated (\Cref{alg:analyze_final_turn} Line 5).  Next, the direction of the turn is determined by calculating which roll attitude direction was greater\footnote{If the aircraft rolls to the left, it is recorded as a negative degree and vice versa if the aircraft rolls to the right.  This is why we find the minimum roll attitude as the highest degree in which aircraft rolled left, and the maximum roll attitude as the highest degree in which the aircraft rolled right.} (\Cref{alg:analyze_final_turn} Lines 6-12).  The severity of the cross track error is then determined (\Cref{alg:analyze_final_turn} Lines 13-19).  A Level 1 error is a value greater than 25 feet, while a Level 2 error is a value greater than 100 feet.\todo{Explain why these values were chosen.}{}  The turn error is determined next based on the roll direction and direction of the cross track error (\Cref{alg:analyze_final_turn} Lines 20-32).  For example, if the pilot rolled left and had a negative cross track error\footnote{Meaning they are left of the runway's centerline.}, it is considered an ``undershoot''.  See \Cref{tab:final_turn_matrix} for all possible combinations of roll direction and cross track error.  However, if the cross track error is less than a Level 1 risk, then the turn is considered to be safe and a Risk Level 0 is stored (\Cref{alg:analyze_final_turn} Line 18).  Lastly, the turn error and severity are stored.  See \Cref{fig:final_turn_examples} for visualizations of several different Final Turn scenarios.
             
             If a Final Turn was not found in the detection phase (due to the pilot performing a straight-in approach), the analysis stage will be skipped.
             
@@ -415,29 +415,25 @@
                     \EndIf
                     
                     \If{$\abs{\var{crossTrackError}} > 100$\,ft}   \Comment Level 2
-                    	\State $ \var{severity} \gets $ `large'
+                    	\State $ \var{severity} \gets $ 2
                     \ElsIf{$\abs{\var{crossTrackError}} > 25$\,ft} \Comment Level 1
-                    	\State $ \var{severity} \gets $ `small'
+                    	\State $ \var{severity} \gets $ 1
                     \Else
-                    	\State $ \var{severity} \gets $ \textit{NULL}
+                    	\State $ \var{severity} \gets $ 0
                     \EndIf
                     
-                    \If{$\var{severity} \neq \textit{NULL}$}
-                    	\If{\var{rollDirection} == `left'}
-                        	\If{$\var{crossTrackError} < 0$}
-                            	\State $ \var{turnError} \gets $ `undershoot'
-                            \Else
-                            	\State $ \var{turnError} \gets $ `overshoot'
-                            \EndIf
+                    \If{\var{rollDirection} == `left'}
+                        \If{$\var{crossTrackError} < 0$}
+                        	\State $ \var{turnError} \gets $ `undershoot'
                         \Else
-                        	\If{$\var{crossTrackError} > 0$}
-                            	\State $ \var{turnError} \gets $ `undershoot'
-                            \Else
-                            	\State $ \var{turnError} \gets $ `overshoot'
-                            \EndIf
+                        	\State $ \var{turnError} \gets $ `overshoot'
                         \EndIf
                     \Else
-                    	\State $ \var{turnError} \gets $ `aligned'
+                        \If{$\var{crossTrackError} > 0$}
+                        	\State $ \var{turnError} \gets $ `undershoot'
+                        \Else
+                        	\State $ \var{turnError} \gets $ `overshoot'
+                        \EndIf
                     \EndIf
                     
                     \State $ \var{approaches[apprID]} \gets $ store severity and error
@@ -521,7 +517,7 @@
     
     When creating the risk level metrics to be used for grading the Approach analysis data, we wanted to ensure they were backed by statistics obtained from the results from the sample set of flights.  Towards that goal, the risk level metrics have been created from the data found during the Approach quality analysis.  For each parameter of concern, the recorded values across all Approach phases in the sample set were used to create a normalized histogram showing the probability density of each value range.  From these histograms, the mean and standard deviation were calculated in order to create a best-fit line to overlay the histogram.  The charts were then analyzed by an aviation statistics expert at the University of North Dakota who gave his opinion on reasonable values to use for Risk Level 1 and 2 value ranges based on each mean, standard deviation, and best-fit line.  Even though those elements were created from the analysis statistics, the aviation expert wanted to also ensure the ``safe value ranges'' (Risk Level 0) did not conflict with the values published in UND's standardization manual~\cite{und_flight_manual} and the Cessna C172S Pilot's Operating Handbook (POH)~\cite{und_poh}.
     
-    After the risk level metrics have been established, the Approach quality analysis results will be re-processed and graded according to the metrics.  The specific details of the grading results from using the risk level metrics will be discussed further in \Cref{ch:results}.
+    After the risk level metrics have been established, the Approach quality analysis results will be re-processed and graded according to the metrics.  The resulting grade is then stored along with the other generated Approach analysis data within the database.  The specific details of the grading results from using the risk level metrics will be discussed further in \Cref{ch:results}.
     
     
 %----------------------------------------
