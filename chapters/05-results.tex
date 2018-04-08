@@ -91,18 +91,18 @@
     
     \begin{figure}
     	\centering
-        \subfloat[Indicated airspeed ($\mu = 64.401, \sigma = 4.535$)\label{subfig:approach_ias_hist}]{
-        	\includegraphics[width=0.45\linewidth]{img/ias_hist}
+        \subfloat[Indicated airspeed.\label{subfig:approach_ias_hist}]{
+        	\includegraphics[width=0.45\linewidth]{orig_ias_hist}
         }\hfill%
-        \subfloat[Vertical speed indicated ($\mu = -364.528, \sigma =181.210$) \label{subfig:approach_vsi_hist}]{
-        	\includegraphics[width=0.45\linewidth]{img/vsi_hist}
+        \subfloat[Vertical speed indicated.\label{subfig:approach_vsi_hist}]{
+        	\includegraphics[width=0.45\linewidth]{orig_vsi_hist}
         }%
         
-        \subfloat[Cross track error ($\mu = -4.542, \sigma = 15.499$) \label{subfig:approach_cross_track_hist}]{
-        	\includegraphics[width=0.45\linewidth]{img/cross_track_hist}
+        \subfloat[Cross track error.\label{subfig:approach_cross_track_hist}]{
+        	\includegraphics[width=0.45\linewidth]{orig_cross_track_hist}
         }\hfill%
-        \subfloat[Heading error ($\mu = 1.958, \sigma = 4.761$) \label{subfig:approach_heading_hist}]{
-        	\includegraphics[width=0.45\linewidth]{img/heading_hist}
+        \subfloat[Heading error.\label{subfig:approach_heading_hist}]{
+        	\includegraphics[width=0.45\linewidth]{orig_heading_hist}
         }%
         \caption{Histograms showing the frequencies of values for each parameter during all Approach phases.  Each graph also has a dotted best-fit line to show how close the frequencies adhere to a normal distribution.}
         \label{fig:approach_histograms}
@@ -146,7 +146,7 @@
 %----------------------------------------
 \section{Grading Metrics:  Define From Parameter Frequencies}
 
-	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the Approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.
+	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the Approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.  The Risk Level 1 values will be a yellow dotted line, while the Risk Level 2 values will be a red dotted line.
 
 
 	%----------
@@ -159,6 +159,8 @@
     % IAS
     %----------
     \subsection{Indicated Airspeed Between 55 and 75 knots}
+    
+          The indicated airspeed values had a mean of 64.401 knots and a standard deviation of 4.535 knots.  The aviation expert stated that the UND standardization manual~\cite{und_flight_manual} has a strict safe range of 61 -0/+5 knots, and thus anything less than 61 knots should be automatically classified as a Risk Level 2.  He advised the higher Risk Level 1 should begin with any value greater than 66 knots due to the same rule.  Lastly, he advised setting the higher Risk Level 2 at 71 knots in order to use the consistent 5 knots increment, which is also relatively close to one standard deviation.  As is shown in \Cref{fig:revised_ias_hist}, the graph is slightly skewed to the right following the -0/+5 knots rule, which is more lenient towards faster speeds than slower speeds.
 
 		\begin{figure}
 			\centering
@@ -173,6 +175,8 @@
     % VSI
     %----------
     \subsection{Vertical Speed Indicated Greater Than -1000 ft/min}
+    
+    	The vertical speed indicated values had a mean of -364.528 ft/min and a standard deviation of 181.210 ft/min.  Although the UND standardization manual states that a vertical speed greater than -1000 ft/min should be achieved for a stabilized approach, the aviation expert stated that a safe range of -800 to -500 ft/min is typically suggested instead of the wide range provided in the manual.  The lower Risk Level 1 is any value that is less than -800 ft/min, and the lower Risk Level 2 is any value less than -1000 ft/min in order to adhere to the stable limit given in the manual.  The higher Risk Level 1 is any value greater than -500 ft/min, and the higher Risk Level 2 is any value greater than -250 ft/min.  These higher limits were chosen because if the aircraft is descending at 250 ft/min, it will typically result in an unsafe and shallow glide slope.  \Cref{fig:revised_vsi_hist} shows these limits and shows that the values are slightly skewed to the left, which corresponds to the risk limits that we've set.
 
 		\begin{figure}
 			\centering
@@ -187,7 +191,9 @@
     % CROSS TRACK ERROR
     %----------
     \subsection{Absolute Cross Track Error Less Than 50 ft}
-
+    
+    	The cross track error values had a mean of -4.542 feet and a standard deviation of 15.499 feet.  \Cref{fig:revised_cross_track_hist} displays the histogram for these values and it can be seen that the graph is relatively normal with a slight skew to the left.  The aviation expert stated that a deviation in cross track error is not as risky as a deviation in airspeed or vertical speed.  Thus, a wider safe range was defined as -40 feet to 40 feet, which is about where the tails wane on both sides.  Consequently, the lower and higher Risk Level 1 ranges are -50 feet to -40 feet and 40 feet to 50 feet, respectively.  The lower and higher Risk Level 2 values are then -50 feet and 50 feet, respectively, in order to correspond with the original stable limits that were used.
+        
 		\begin{figure}
 			\centering
             \includegraphics[width=\linewidth]{revised_cross_track_hist}
@@ -201,6 +207,8 @@
     % HEADING ERROR
     %----------
     \subsection{Absolute Heading Error Less Than 10 degrees}
+    
+    	The heading error values had a mean of $1.958^\circ$ and a standard deviation of $4.761^\circ$.  Similar to cross track error, the aviation expert stated that heading error is not as risky as error in the other parameters.  He also mentioned that heading error is slightly more difficult to judge without knowing the wind component on the aircraft since the pilot may have to purposely direct the aircraft several degrees off-center in order to counteract the push of the wind.  Both of these facts means that the safe range for heading error will contain a majority of values.  With that said, the expert advised using a safe range of $-15^\circ$ to $15^\circ$.  The lower and higher Risk Level 1 ranges are from $-20^\circ$ to $-15^\circ$ and $15^\circ$ to $20^\circ$, respectively.  Consequently, the lower and higher Risk Level 2 values are $-20^\circ$ and $20^\circ$, respectively.  The histogram for heading error, as shown in \Cref{fig:revised_heading_hist}, appears to best fit a normal distribution.
         
         \begin{figure}
 			\centering
@@ -208,6 +216,34 @@
             \caption{Histogram for heading error ($\mu = 1.958, \sigma = 4.761$).  The safe range is between -15 and 15 degrees.  The lower Risk Level 1 range is between -20 and -15 degrees, and the Risk Level 2 is anything less than -20 degrees.  The higher Risk Level 1 is between 15 and 20 degrees, and the Risk Level 2 is anything greater than 20 degrees.}
             \label{fig:revised_heading_hist}
 		\end{figure}
+        
+        
+        
+        \begin{table}
+        	\centering
+            \caption{\small{blah}} \label{tab:metrics_values}
+            \vspace{3pt}
+            \begin{tabular}{@{} l l | l l @{}}
+            \hline\noalign{\smallskip}
+            \multicolumn{2}{c|}{\bfseries Event} & \bfseries Risk Level 1 & \bfseries Risk Level 2 \\
+            \noalign{\smallskip}
+            \hline
+            \noalign{\smallskip}
+            
+            \multirow{2}{*}{Indicated Airspeed} & low  & N.A.     & 61 knots \\
+                                                & high & 66 knots & 71 knots \\ 
+			\midrule
+            \multirow{2}{*}{Vertical speed} & low  & -800 ft/min & -1000 ft/min \\
+                                            & high & -500 ft/min & -250 ft/min \\
+            \midrule
+            \multirow{2}{*}{Cross track error} & low  & -40 ft & -50 ft \\
+                                               & high & 40 ft  & 50 ft \\
+            \midrule
+            \multirow{2}{*}{Heading error} & low  & $-15^\circ$ & $-20^\circ$ \\
+                                           & high & $15^\circ$  & $20^\circ$ \\
+            \midrule
+            \end{tabular}
+        \end{table}
             
 
 %----------------------------------------
@@ -293,10 +329,9 @@
     
     
     \begin{table}[tb]
-        \caption{\small{Performance of Linear v. Parallel Execution Times}}
+    	\centering
+        \caption{\small{Performance of Linear v. Parallel Execution Times}} \label{tab:performance_results}
         \vspace{3pt}
-        \label{tab:performance_results}
-        \centering
         \begin{tabular}{@{} >{\centering\arraybackslash} m{.23\linewidth} S[table-format=3.3] S[table-format=2.3] @{}}
             \hline\noalign{\smallskip}
             \bfseries Run & \bfseries Linear (sec) & \bfseries Parallel (sec) \\
