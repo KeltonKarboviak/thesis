@@ -148,7 +148,7 @@
 %----------------------------------------
 \section{Grading Metrics:  Define From Parameter Frequencies}
 
-	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the Approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.  The Risk Level 1 values will be a yellow dotted line, while the Risk Level 2 values will be a red dotted line.
+	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the Approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.  The Risk Level 1 values will be a yellow dotted line, while the Risk Level 2 values will be a red dotted line.  A summary of the defined grading metrics can be seen in \Cref{tab:metrics_values} at the end of this Section.
 
 
 	%----------
@@ -222,28 +222,28 @@
         
         
         \begin{table}
-        	\centering
-            \caption{\small{blah}} \label{tab:metrics_values}
+            \centering
+            \caption{\small{Defined Risk Levels during Approach for a Cessna C172S}} \label{tab:metrics_values}
             \vspace{3pt}
             \begin{tabular}{@{} l l | l l @{}}
-            \hline\noalign{\smallskip}
-            \multicolumn{2}{c|}{\bfseries Event} & \bfseries Risk Level 1 & \bfseries Risk Level 2 \\
-            \noalign{\smallskip}
-            \hline
-            \noalign{\smallskip}
-            
-            \multirow{2}{*}{Indicated Airspeed} & low  & N.A.     & 61 knots \\
-                                                & high & 66 knots & 71 knots \\ 
-			\midrule
-            \multirow{2}{*}{Vertical speed} & low  & -800 ft/min & -1000 ft/min \\
-                                            & high & -500 ft/min & -250 ft/min \\
-            \midrule
-            \multirow{2}{*}{Cross track error} & low  & -40 ft & -50 ft \\
-                                               & high & 40 ft  & 50 ft \\
-            \midrule
-            \multirow{2}{*}{Heading error} & low  & $-15^\circ$ & $-20^\circ$ \\
-                                           & high & $15^\circ$  & $20^\circ$ \\
-            \midrule
+                \hline\noalign{\smallskip}
+                \multicolumn{2}{c|}{\bfseries Event} & \bfseries Risk Level 1 & \bfseries Risk Level 2 \\
+                \noalign{\smallskip}
+                \hline
+                \noalign{\smallskip}
+                
+                \multirow{2}{*}{Indicated Airspeed} & low  & N.A.     & 61 knots \\
+                                                    & high & 66 knots & 71 knots \\ 
+                			\midrule
+                \multirow{2}{*}{Vertical speed} & low  & -800 ft/min & -1000 ft/min \\
+                                                & high & -500 ft/min & -250 ft/min \\
+                \midrule
+                \multirow{2}{*}{Cross track error} & low  & -40 ft & -50 ft \\
+                                                   & high & 40 ft  & 50 ft \\
+                \midrule
+                \multirow{2}{*}{Heading error} & low  & $-15^\circ$ & $-20^\circ$ \\
+                                               & high & $15^\circ$  & $20^\circ$ \\
+                \midrule
             \end{tabular}
         \end{table}
             
