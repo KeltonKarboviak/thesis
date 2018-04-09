@@ -24,13 +24,13 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass[12pt, oneside]{styles/Thesis} % The default font size and one-sided printing (no margin offsets)
+\documentclass[12pt, oneside, final]{styles/Thesis} % The default font size and one-sided printing (no margin offsets)
 
 % declare the path(s) where your graphic files are
 \graphicspath{{img/}}
 % and their extensions so you won't have to specify these with
 % every instance of \includegraphics
-\DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
+\DeclareGraphicsExtensions{.pdf,.jpg,.jpeg,.png}
 
 \usepackage{algorithm,algpseudocode}
 \usepackage{cleveref}
@@ -48,7 +48,7 @@
 \title{\ttitle} % Defines the thesis title - don't touch this
 
 % correct bad hyphenation here // only hyphenate where specified
-\hyphenation{op-tical net-works semi-conduc-tor}
+\hyphenation{op-tical net-works semi-conduc-tor metrics-based}
 
 % Initialize Nomenclature
 \makenomenclature{}
@@ -63,8 +63,10 @@
 
 \newcommand{\note}[1]{\todo[inline, author={Kelton}]{#1}}
 
-\newcommand{\toolname}{Go-Around Detection Tool}
-\newcommand{\toolnameshort}{GADT}
+\newcommand{\toolname}{Critical Phase Analysis Tool}
+\newcommand{\toolnameshort}{CPAT}
+
+%\renewcommand\bibname{REFERENCES}
 
 
 %%%%% Fix to get algorithmic environment to create hanging-indents

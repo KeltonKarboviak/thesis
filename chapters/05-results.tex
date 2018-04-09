@@ -21,7 +21,7 @@
     
     \begin{figure}
     	\centering
-        \includegraphics[width=\linewidth]{img/kml_example}
+        \includegraphics[width=\linewidth]{kml_example}
         \caption{Example of using a KML file to visualize a flight path in \textit{Google Earth}.  This flight visualization is an example of a student flight that has multiple Approach phases.}
         \label{fig:kml_example}
     \end{figure}
@@ -48,7 +48,7 @@
 
         \begin{figure}
             \centering
-            \includegraphics[width=0.75\linewidth]{validation_results}
+            \includegraphics[width=0.85\linewidth]{validation_results}
             \caption{Pie chart showing the manual validation results including true positives, false positives, and false negatives.}
             \label{fig:validation_results}
         \end{figure}
@@ -149,12 +149,6 @@
 \section{Grading Metrics:  Define From Parameter Frequencies}
 
 	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the Approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.  The Risk Level 1 values will be a yellow dotted line, while the Risk Level 2 values will be a red dotted line.  A summary of the defined grading metrics can be seen in \Cref{tab:metrics_values} at the end of this Section.
-
-
-	%----------
-    % APPROACH
-    %----------
-%     \subsection{Approach}
     
     	
     %----------
@@ -180,7 +174,7 @@
     
     	The vertical speed indicated values had a mean of -364.528 ft/min and a standard deviation of 181.210 ft/min.  Although the UND standardization manual states that a vertical speed greater than -1000 ft/min should be achieved for a stabilized approach, the aviation expert stated that a safe range of -800 to -500 ft/min is typically suggested instead of the wide range provided in the manual.  The lower Risk Level 1 is any value that is less than -800 ft/min, and the lower Risk Level 2 is any value less than -1000 ft/min in order to adhere to the stable limit given in the manual.  The higher Risk Level 1 is any value greater than -500 ft/min, and the higher Risk Level 2 is any value greater than -250 ft/min.  These higher limits were chosen because if the aircraft is descending at 250 ft/min, it will typically result in an unsafe and shallow glide slope.  \Cref{fig:revised_vsi_hist} shows these limits and shows that the values are slightly skewed to the left, which corresponds to the risk limits that we've set.
 
-		\begin{figure}
+		\begin{figure}[t]
 			\centering
             \includegraphics[width=\linewidth]{revised_vsi_hist}
             \caption{Histogram for vertical speed indicated ($\mu = -364.528, \sigma = 181.210$).  The safe range is between -800 and -500 ft/min.  The lower Risk Level 1 range is between -1000 and -800 ft/min, and the Risk Level 2 is anything less than -1000 ft/min.  The higher Risk Level 1 range is between -500 and -250 ft/min, and the Risk Level 2 is anything greater than -250 ft/min.}
@@ -196,7 +190,7 @@
     
     	The cross track error values had a mean of -4.542 feet and a standard deviation of 15.499 feet.  \Cref{fig:revised_cross_track_hist} displays the histogram for these values and it can be seen that the graph is relatively normal with a slight skew to the left.  The aviation expert stated that a deviation in cross track error is not as risky as a deviation in airspeed or vertical speed.  Thus, a wider safe range was defined as -40 feet to 40 feet, which is about where the tails wane on both sides.  Consequently, the lower and higher Risk Level 1 ranges are -50 feet to -40 feet and 40 feet to 50 feet, respectively.  The lower and higher Risk Level 2 values are then -50 feet and 50 feet, respectively, in order to correspond with the original stable limits that were used.
         
-		\begin{figure}
+		\begin{figure}[t]
 			\centering
             \includegraphics[width=\linewidth]{revised_cross_track_hist}
             \caption{Histogram for cross track error ($\mu = -4.542, \sigma = 15.499$).  The safe range is between -40 and 40 ft.  The lower Risk Level 1 range is between -50 and -40 ft, and the Risk Level 2 is anything less than -50 ft.  The higher Risk Level 1 range is between 40 and 50 ft, and the Risk Level 2 is anything greater than 50 ft.}
@@ -225,7 +219,7 @@
             \centering
             \caption{\small{Defined Risk Levels during Approach for a Cessna C172S}} \label{tab:metrics_values}
             \vspace{3pt}
-            \begin{tabular}{@{} l l | l l @{}}
+            \begin{tabular}{@{} l l | r r @{}}
                 \hline\noalign{\smallskip}
                 \multicolumn{2}{c|}{\bfseries Event} & \bfseries Risk Level 1 & \bfseries Risk Level 2 \\
                 \noalign{\smallskip}
@@ -252,14 +246,31 @@
 % GRADING METRICS: RESULTS
 %----------------------------------------
 \section{Grading Metrics:  Experiment Results}
-
-	\note{Results found from using metrics on analysis results.}
+	
+	Using the metrics defined in the previous Section, the sample set of flights was re-analyzed in order to determine the risk levels of each parameter for every approach.  This was done by taking all the values for a parameter during the Approach phase, averaging the values, and determining what risk level range the average fell within.  \Cref{fig:metric_parameter_results} shows the frequency of each parameter grouped by risk level as a result of the re-analysis.  From the graph we can see some trends such as the frequency of Risk Level 1 vertical speeds being abnormally higher than the frequency of Risk Level 1.  This may mean that the sample set contained an abnormal number of Approaches with too low or too high rate of descent.  We can also see that Risk Level 0 made up a majority of occurrences for heading and cross track, which follows the fact that these parameters are typically less risky as mentioned in their previous corresponding Subsections.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{metric_parameter_results}
+		\caption{Frequency of the occurrences of each parameter for Risk Levels 0, 1, and 2 using the newly defined risk level values.}
+		\label{fig:metric_parameter_results}
+	\end{figure}
+	
+	
+	With regard to grading the Approaches, the total number of deductions is calculated by summing the risk levels across all parameters as well as the Final Turn risk level.  For example; if during an Approach the aircraft achieved a Risk Level 2 in indicated airspeed, a Risk Level 1 in vertical speed, a Risk Level 1 undershoot for the Final Turn, and a Risk Level 0 for all other parameters; the total number of deductions is 4\footnote{$2\,\text{(IAS)} + 1\,\text{(VSI)} + 1\,\text{(Final Turn)} + 0\,\text{(cross track)} + 0\,\text{(heading)} = 4\,\text{deductions}$}.  Additionally, if the aircraft was unstable during the Approach and the pilot did not perform a go-around, an additional one deduction is added to the total.  The total number of deductions is then multiplied by a penalty constant.  The penalty points are subtracted from a total of 100 points in order to obtain the final grade for the Approach.  In this research, a value of 4 points is used as the penalty per deduction.  This value was chosen because there is a possibility of accruing 11 total deductions\footnote{2 risk levels * 4 parameters + 2 Final Turn risk levels + 1 for unstable w/o go-around = 11}, which would create a total of 44 penalty points.  Thus, the worst possible grade to receive would be 56 points\footnote{If using a 90-80-70-60\% grading scale, this would then correspond to an F.}.  \Cref{fig:scores_hist} gives a histogram of the grades calculated for the sample set of 100 flights used during the experiments.  For the grades of the sample set, the mean was 87.168 points and a standard deviation of 7.260 points.  As the figure shows, the histogram reasonably fits a normal distribution, but slightly skewed to the right.  These results have given us good confidence that the grading system will replicate the grading structure already used in Universities that students are already accustomed to.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{orig_scores_hist}
+		\caption{Histogram showing the results of grading Approach phases.  Each grade is calculated by totaling the risk levels across all parameters then multiplying the sum by a penalty amount per deduction.}
+		\label{fig:scores_hist}
+	\end{figure}
     
     
 %----------------------------------------
-% WEB INTERFACE
+% WEB INTERFACES
 %----------------------------------------
-\section{Web Interface}
+\section{Web Interfaces}
 
 	This Section details the newly developed web pages for the NGAFID, which dynamically display results based on the user's chosen filters.  At the time of this writing, there have been new tools developed for the Approach, Final Turn, and self-defined glide path analyses.  Each tool will be discussed further in the subsequent Subsections.
     
@@ -324,10 +335,9 @@
 %----------------------------------------
 \section{Performance}
 
-	A secondary aspect of this research is to minimize the execution time so  the analysis only adds a minimal amount of time to a flight being imported into the NGAFID system.  The results of the benchmarking tests showed that the linearly executing application ran for an average of XXX.XXX seconds over the 100 randomly tested flights.  On the other hand, the parallel application ran for an average of XX.XXX seconds over the same flights.  This means the average per-flight execution times for the linear and parallel applications were X.XXX and X.XXX seconds, respectively.  As a result, the parallelized application had a XX.XXX\% speedup, which is fairly significant.  %A summary of the benchmarking tests and other relevant statistics are given in \Cref{tab:performance_results}.
-    \note{Fill in timing results.}
+	A secondary aspect of this research is to minimize the execution time so the analysis only adds a minimal amount of time to a flight being imported into the NGAFID system.  The results of the benchmarking tests showed that the linearly executing application ran for an average of 127.109 seconds over the 100 randomly tested flights.  On the other hand, the parallel application ran for an average of 56.935 seconds over the same flights.  This means the average per-flight execution times for the linear and parallel applications were 1.271 and 0.569 seconds, respectively.  As a result, the parallelized application had a 2.23x speedup, which is fairly significant.  A summary of the benchmarking tests and other relevant statistics are given in \Cref{tab:performance_results}.
     
-    As further evidence, the parallel application was tested on a larger subset of flights to see if the average execution time remained stable, in which it was tested on 5,272 flights.  For this test, the parallel application was able to analyze the data and insert all the results into the database in XXXX.XXX seconds.  This gives a per-flight execution time of X.XXX seconds, which is slightly less than the average for 100 flights.  The reasoning behind this can most likely be attributed to the fact that spinning up the sub-processes creates a substantial overhead.  Thus, the longer the application is able to execute, the greater performance gain will be received.  This will, of course, start to show diminishing returns as with any other parallel computing application.
+    As further evidence, the parallel application was tested on a larger subset of flights to see if the average execution time remained stable, in which it was tested on 5,923 flights.  For this test, the parallel application was able to analyze the data and insert all the results into the database in 2,709.577 seconds.  This gives a per-flight execution time of 0.457 seconds, which is slightly less than the average for 100 flights.  The reasoning behind this can most likely be attributed to the fact that spinning up the sub-processes creates a substantial overhead.  Thus, the longer the application is able to execute, the greater performance gain will be received.  This will, of course, start to show diminishing returns as with any other parallel computing application.
     
     
     \begin{table}[tb]
@@ -336,24 +346,24 @@
         \vspace{3pt}
         \begin{tabular}{@{} >{\centering\arraybackslash} m{.23\linewidth} S[table-format=3.3] S[table-format=2.3] @{}}
             \hline\noalign{\smallskip}
-            \bfseries Run & \bfseries Linear (sec) & \bfseries Parallel (sec) \\
+            \bfseries Run \# & \bfseries Linear (sec) & \bfseries Parallel (sec) \\
             \noalign{\smallskip}
             \hline
             \noalign{\smallskip}
-             1 & 591.935 & 57.295 \\ \hline
-             2 & 576.774 & 60.282 \\ \hline
-             3 & 586.009 & 57.830 \\ \hline
-             4 & 597.643 & 62.489 \\ \hline
-             5 & 591.170 & 57.578 \\ \hline
-             6 & 585.834 & 62.702 \\ \hline
-             7 & 593.711 & 65.064 \\ \hline
-             8 & 587.177 & 66.167 \\ \hline
-             9 & 586.059 & 58.108 \\ \hline
-            10 & 590.012 & 56.501 \\ \hline
+             1 & 128.275 & 56.726 \\ \hline
+             2 & 130.441 & 56.086 \\ \hline
+             3 & 127.878 & 61.263 \\ \hline
+             4 & 121.923 & 55.787 \\ \hline
+             5 & 126.418 & 57.964 \\ \hline
+             6 & 125.425 & 55.753 \\ \hline
+             7 & 126.123 & 57.945 \\ \hline
+             8 & 128.949 & 55.830 \\ \hline
+             9 & 128.161 & 55.497 \\ \hline
+            10 & 127.494 & 56.496 \\ \hline
             \hline
-            \bfseries Average           & 588.632 & 60.402   \\ \hline
-            \bfseries Latency / flight  &   5.886 &  0.604   \\ \hline
-            \bfseries Speedup           &         & 90.255\% \\ \hline
+            \bfseries Average           & 127.109 & 56.935 \\ \hline
+            \bfseries Latency / flight  &   1.271 &  0.569 \\ \hline
+            \bfseries Speedup           &         &  2.23x \\ \hline
         \end{tabular}
     \end{table}
     

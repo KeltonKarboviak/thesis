@@ -9,7 +9,7 @@
 %----------------------------------------
 \section{Phase of Flight Identification} \label{sec:phase_identification}
 
-\note{Not trivial because multiple circuits in a single flight. Lack technology found in commercial aircraft. Flying patterns are highly variable in GA due to flight training.}
+%\note{Not trivial because multiple circuits in a single flight. Lack technology found in commercial aircraft. Flying patterns are highly variable in GA due to flight training.}
 
 	%----------
     % APPROACH
@@ -364,7 +364,7 @@
         
         	The Final Turn subphase is very critical for achieving a flight path aligned with the runway.  Since the end of the turn occurs fairly late in the Approach phase, any mistakes can greatly detriment the pilot's ability to be stabilized by 200 ft AGL.  If the pilot makes a turn that is too sharp (undershoot) or too wide (overshoot), they may have to make a large corrective maneuver to re-align themselves, which could stall the aircraft if performed incorrectly and potentially result in a loss of control (LOC).  Stalls and loss of control events contributed to 52.0\% and 17.4\% of all landing accidents in 2017~\cite{kenny201726th}, respectively. 
             
-            Analyzing this subphase only requires the end time value and runway found during the identification stage.  For this single time value, the aircraft's cross track error is calculated (\Cref{alg:analyze_final_turn} Line 5).  Next, the direction of the turn is determined by calculating which roll attitude direction was greater\footnote{If the aircraft rolls to the left, it is recorded as a negative degree and vice versa if the aircraft rolls to the right.  This is why we find the minimum roll attitude as the highest degree in which aircraft rolled left, and the maximum roll attitude as the highest degree in which the aircraft rolled right.} (\Cref{alg:analyze_final_turn} Lines 6-12).  The severity of the cross track error is then determined (\Cref{alg:analyze_final_turn} Lines 13-19).  A Level 1 error is a value greater than 25 feet, while a Level 2 error is a value greater than 100 feet.\todo{Explain why these values were chosen.}{}  The turn error is determined next based on the roll direction and direction of the cross track error (\Cref{alg:analyze_final_turn} Lines 20-32).  For example, if the pilot rolled left and had a negative cross track error\footnote{Meaning they are left of the runway's centerline.}, it is considered an ``undershoot''.  See \Cref{tab:final_turn_matrix} for all possible combinations of roll direction and cross track error.  However, if the cross track error is less than a Level 1 risk, then the turn is considered to be safe and a Risk Level 0 is stored (\Cref{alg:analyze_final_turn} Line 18).  Lastly, the turn error and severity are stored.  See \Cref{fig:final_turn_examples} for visualizations of several different Final Turn scenarios.
+            Analyzing this subphase only requires the end time value and runway found during the identification stage.  For this single time value, the aircraft's cross track error is calculated (\Cref{alg:analyze_final_turn} Line 5).  Next, the direction of the turn is determined by calculating which roll attitude direction was greater\footnote{If the aircraft rolls to the left, it is recorded as a negative degree and vice versa if the aircraft rolls to the right.  This is why we find the minimum roll attitude as the highest degree in which aircraft rolled left, and the maximum roll attitude as the highest degree in which the aircraft rolled right.} (\Cref{alg:analyze_final_turn} Lines 6-12).  The severity of the cross track error is then determined (\Cref{alg:analyze_final_turn} Lines 13-19).  A Risk Level 1 error is a value greater than 25 feet, while a Risk Level 2 error is a value greater than 100 feet.\todo{Explain why these values were chosen.}{}  The turn error is determined next based on the roll direction and direction of the cross track error (\Cref{alg:analyze_final_turn} Lines 20-32).  For example, if the pilot rolled left and had a negative cross track error\footnote{Meaning they are left of the runway's centerline.}, it is considered an ``undershoot''.  See \Cref{tab:final_turn_matrix} for all possible combinations of roll direction and cross track error.  However, if the cross track error is less than a Level 1 risk, then the turn is considered to be safe and a Risk Level 0 is stored (\Cref{alg:analyze_final_turn} Line 18).  Lastly, the turn error and severity are stored.  See \Cref{fig:final_turn_examples} for visualizations of several different Final Turn scenarios.
             
             If a Final Turn was not found in the detection phase (due to the pilot performing a straight-in approach), the analysis stage will be skipped.
             
@@ -460,7 +460,7 @@
             First, the slice of data for the corresponding Approach phase found during the detection stage is obtained (\Cref{alg:analyze_glide_path} Line 2).  Next, a simple linear regression using the least squares approach is calculated (\Cref{alg:analyze_glide_path} Line 3) using the aircraft's height AGL (dependent variable) over all the time values (independent variable).  From that calculation we obtain the y-intercept, slope, and r-value (correlation coefficient) of the linear regression model (\Cref{alg:analyze_glide_path} Lines 4, 5, 15).  Then, all the necessary values for computing the pilot's defined GPA are calculated (\Cref{alg:analyze_glide_path} Lines 6-13).  Once all the supporting values are found, then the actual GPA is calculated using the $\arctan$ of the predicted vertical distance dropped over the traveled horizontal distance (\Cref{alg:analyze_glide_path} Line 14).  Furthermore, the square of the r-value is calculated (\Cref{alg:analyze_glide_path} Line 16), which explains how well the pilot's glide path ``fit'' the ideal glide path.  Lastly, the calculated values and meta-data are stored
             
             
-            \begin{figure}
+            \begin{figure}[t]
             	\centering
                 \includegraphics[width=\linewidth]{img/self_defined_example.jpg}
                 \caption{Example showing the self-defined glide path angle analysis.  This shows a side view of the pilot oscillating about the glide slope during the Approach phase.  The calculation uses a simple linear regression of the aircraft's vertical distance over time fitted using the least squares approach.  The solid line is the aircraft's actual glide path while the dotted line is the ideal glide path.}
@@ -469,7 +469,7 @@
             
             
             %%%%% Analyze Self-Defined Glide Path Pseudo-code
-            \begin{algorithm}
+            \begin{algorithm}[t]
                 \begin{algorithmic}[1]\raggedright
                 \Function{AnalyzeGlidePath}{startTime, endTime, runway}
                     \State $ \var{approachDataSlice} \gets $ get slice of data between the approach \var{startTime} and \var{endTime}
@@ -507,9 +507,9 @@
     %----------
     % LANDING
     %----------
-    \subsection{Landing}
-    
-    	\note{Probably am going to remove this section as I don't really do any quality analysis of the Landing phase (only landing type detection as in previous Section).}
+%    \subsection{Landing}
+%    
+%    	\note{Probably am going to remove this section as I don't really do any quality analysis of the Landing phase (only landing type detection as in previous Section).}
     
 
 %----------------------------------------
