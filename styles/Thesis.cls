@@ -216,7 +216,7 @@
     \begin{titlepage}
         \begin{center}
             \setlength{\parskip}{0pt}
-            {\large \singlespace \ttitle \\}% Thesis title
+            {\large \singlespace \MakeUppercase{\ttitle} \\}% Thesis title
             \bigskip
             \bigskip
             \bigskip
@@ -241,7 +241,7 @@
             \bigskip
             {\large \univname \\} % University name
             \bigskip
-            {\large in partial fulfillment of the requirements \\}
+            {\large In partial fulfillment of the requirements \\}
             \bigskip
             \bigskip
             \bigskip
@@ -291,7 +291,7 @@
     \begin{adjustwidth}{15em}{}
 
     \noindent\rule[0.1em]{20em}{0.5pt}\\ % This prints a line for a signature
-    \noindent\supname
+    \noindent\supname, Chairperson
 
     \noindent\rule[0.1em]{20em}{0.5pt}\\
     \noindent\committeefirstname
@@ -312,7 +312,7 @@
     \bigskip
 
     \noindent\rule[0.1em]{20em}{0.5pt}\\ % This prints a line for the signature
-    \noindent Wayne Swisher\\
+    \noindent Dr. Grant McGimpsey\\
     \noindent Dean of the School of Graduate Studies\\
 
     \bigskip
