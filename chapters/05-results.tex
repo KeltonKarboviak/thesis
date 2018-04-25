@@ -22,7 +22,7 @@
     \begin{figure}
     	\centering
         \includegraphics[width=\linewidth]{kml_example}
-        \caption{Example of using a KML file to visualize a flight path in \textit{Google Earth}.  This flight visualization is an example of a student flight that has multiple Approach phases.}
+        \caption{Example of using a KML file to visualize a flight path in \textit{Google Earth}.  This flight visualization is an example of a student flight that has multiple approach phases.}
         \label{fig:kml_example}
     \end{figure}
     
@@ -32,7 +32,7 @@
     %----------
     \subsection{Approach}
     
-        The \toolname\ generated a total of 380 approaches for the 100 flights that were tested. As seen in \Cref{fig:kml_example}, student flights typically consist of multiple approaches as this is something that needs to be practiced.  Out of the total; there are 3730 (98.16\%) true positives, five (1.32\%) false positives, and two (0.53\%) false negatives.  These results can also be found in \Cref{fig:validation_results}.
+        The \toolname\ generated a total of 380 approaches for the 100 flights that were tested. As seen in \Cref{fig:kml_example}, student flights typically consist of multiple approaches as this is something that needs to be practiced.  Out of the total; there are 373 (98.16\%) true positives, five (1.32\%) false positives, and two (0.53\%) false negatives.  These results can also be found in \Cref{fig:validation_results}.
         
         In the context of this application, a true positive is a case where the tool correctly indicates that an approach is occurring during a specified time frame.
         
@@ -89,7 +89,7 @@
     \end{figure}
     
     
-    Another interesting set of statistics that can be drawn from the analysis are parameter value frequencies.  Creating histograms of the values for each parameter during all Approach phases can show the values that occur most frequently (highest density).  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} visualize these histograms and give the corresponding mean and standard deviation values.  These graphs are able to show how well pilots are adhering to the published stabilized approach criteria (see \Cref{tab:approach_thresholds}).  As mentioned previously, the standard deviations will be used in defining the grading metrics and will be discussed in more detail later in this Chapter.
+    Another interesting set of statistics that can be drawn from the analysis are parameter value frequencies.  Creating histograms of the values for each parameter during all approach phases can show the values that occur most frequently (highest density).  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} visualize these histograms and give the corresponding mean and standard deviation values.  These graphs are able to show how well pilots are adhering to the published stabilized approach criteria (see \Cref{tab:approach_thresholds}).  As mentioned previously, the standard deviations will be used in defining the grading metrics and will be discussed in more detail later in this Chapter.
     
     \begin{figure}
     	\centering
@@ -106,7 +106,7 @@
         \subfloat[Heading error.\label{subfig:approach_heading_hist}]{
         	\includegraphics[width=0.45\linewidth]{orig_heading_hist}
         }%
-        \caption{Histograms showing the frequencies of values for each parameter during all Approach phases.  Each graph also has a dotted best-fit line to show how close the frequencies adhere to a normal distribution.}
+        \caption{Histograms showing the frequencies of values for each parameter during all approach phases.  Each graph also has a dotted best-fit line to show how close the frequencies adhere to a normal distribution.}
         \label{fig:approach_histograms}
     \end{figure}
     
@@ -114,16 +114,16 @@
     	%----------
         % FINAL TURN
         %----------
-        \subsubsection{Final Turn.}
+        \subsubsection{Final turn.}
         
-        	Out of the 380 detected approaches; 262 (68.95\%) had a Final Turn subphase, 76 (20.00\%) performed a straight-in approach, and 42 (11.05\%) were not able to detect the runway and, therefore, could not detect whether a Final Turn was performed.  \Cref{fig:final_turn_results_ratios} depicts these ratios.  As mentioned earlier, the 42 \textit{null} runways will be drastically reduced in the future once additional airports and runways are added to the geological database.  Once the airport and runway databases are more complete, the runway error rate should become much more acceptable.
+        	Out of the 380 detected approaches; 262 (68.95\%) had a final turn subphase, 76 (20.00\%) performed a straight-in approach, and 42 (11.05\%) were not able to detect the runway and, therefore, could not detect whether a final turn was performed.  \Cref{fig:final_turn_results_ratios} depicts these ratios.  As mentioned earlier, the 42 \textit{null} runways will be drastically reduced in the future once additional airports and runways are added to the geological database.  Once the airport and runway databases are more complete, the runway error rate should become much more acceptable.
             
-            \Cref{fig:final_turn_results_by_risk} gives a comparison of the number of occurrences for each turn error type and Risk Level classification.  This graph is displaying the subset of 262 detected Final Turn subphases found in \Cref{fig:final_turn_results_ratios}.  The figure shows that 76.34\% of the Final Turns resulted in an undershoot and a large proportion (45.420\%) resulted in a Risk Level 2 undershoot.  Those statistics are definitely interesting and are an example of an anomaly that is worth looking into by an aviation expert.  One explanation could be that there is frequently a strong wind component against the aircraft, which could cause the numerous undershoots.  Further analysis such as this could be performed as a future work since wind and other meteorological factors were not taken into consideration in the analyses within this research.
+            \Cref{fig:final_turn_results_by_risk} gives a comparison of the number of occurrences for each turn error type and Risk Level classification.  This graph is displaying the subset of 262 detected final turn subphases found in \Cref{fig:final_turn_results_ratios}.  The figure shows that 76.34\% of the final turns resulted in an undershoot and a large proportion (45.42\%) resulted in a Risk Level 2 undershoot.  Those statistics are definitely interesting and are an example of an anomaly that is worth looking into by an aviation expert.  One explanation could be that there is frequently a strong wind component against the aircraft, which could cause the numerous undershoots.  Further analysis such as this could be performed as a future work since wind and other meteorological factors were not taken into consideration in the analyses within this research.
             
             \begin{figure}
             	\centering
                 \includegraphics[width=0.75\linewidth]{final_turn_detection_results}
-                \caption{Pie chart showing the results from the Final Turn detection algorithm.}
+                \caption{Pie chart showing the results from the final turn detection algorithm.}
                 \label{fig:final_turn_results_ratios}
             \end{figure}
             
@@ -146,9 +146,9 @@
 %----------------------------------------
 % GRADING METRICS: DEFINE FROM PARAMETER FREQUENCIES
 %----------------------------------------
-\section{Grading Metrics:  Define From Parameter Frequencies}
+\section{Grading Metrics:  Defined From Parameter Frequencies}
 
-	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the Approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.  The Risk Level 1 values will be a yellow dotted line, while the Risk Level 2 values will be a red dotted line.  A summary of the defined grading metrics can be seen in \Cref{tab:metrics_values} at the end of this Section.
+	As mentioned in \Cref{ch:methodology}, the goal for creating the Risk Level metrics is to use statistical results from the approach quality analysis to determine reasonable values that still adhere to the published stable value ranges.  \Cref{subfig:approach_ias_hist,subfig:approach_vsi_hist,subfig:approach_cross_track_hist,subfig:approach_heading_hist} above contain normalized histograms showing the probability density for the parameter values.  These graphs were analyzed by an aviation statistics expert from UND in order to create a safe range (Risk Level 0), a moderate risk range (Risk Level 1), and a high risk range (Risk Level 2) for each parameter of concern.  These graphs will be re-used in the following Sections, but will have additional information showing the value ranges that were created.  The Risk Level 1 values will be a yellow dotted line, while the Risk Level 2 values will be a red dotted line.  A summary of the defined grading metrics can be seen in \Cref{tab:metrics_values} at the end of this Section.
     
     	
     %----------
@@ -161,7 +161,7 @@
 		\begin{figure}
 			\centering
             \includegraphics[width=\linewidth]{revised_ias_hist}
-            \caption{Histogram for indicated airspeed ($\mu = 64.401, \sigma = 4.535$).  The safe range is between 61 and 66 knots.  There is no lower Risk Level 1 since the Risk Level 2 is anything less than 61 knots.  The higher Risk Level 1 range is between 66 and 71 knots, and the Risk Level 2 is anything greater than 71 knots.}
+            \caption{Histogram for indicated airspeed ($\mu = 64.401, \sigma = 4.535$).  The safe range is between 61 and 66 knots.  The aviation expert stated that 61 knots is a hard limit according to the Cessna 172S manual~\cite{und_poh}, thus any airspeed less than 61 knots is automatically classified as a Risk Level 2.  This means there is not a lower Risk Level 1.  The higher Risk Level 1 range is between 66 and 71 knots, and the Risk Level 2 is anything greater than 71 knots.}
             \label{fig:revised_ias_hist}
 		\end{figure}
 
@@ -217,7 +217,7 @@
         
         \begin{table}
             \centering
-            \caption{\small{Defined Risk Levels during Approach for a Cessna C172S}} \label{tab:metrics_values}
+            \caption{\small{Defined Risk Levels during approach for a Cessna C172S}} \label{tab:metrics_values}
             \vspace{3pt}
             \begin{tabular}{@{} l l | r r @{}}
                 \hline\noalign{\smallskip}
@@ -226,7 +226,7 @@
                 \hline
                 \noalign{\smallskip}
                 
-                \multirow{2}{*}{Indicated Airspeed} & low  & N.A.     & 61 knots \\
+                \multirow{2}{*}{Indicated airspeed} & low  & N.A.     & 61 knots \\
                                                     & high & 66 knots & 71 knots \\ 
                 			\midrule
                 \multirow{2}{*}{Vertical speed} & low  & -800 ft/min & -1000 ft/min \\
@@ -247,7 +247,7 @@
 %----------------------------------------
 \section{Grading Metrics:  Experiment Results}
 	
-	Using the metrics defined in the previous Section, the sample set of flights was re-analyzed in order to determine the risk levels of each parameter for every approach.  This was done by taking all the values for a parameter during the Approach phase, averaging the values, and determining what risk level range the average fell within.  \Cref{fig:metric_parameter_results} shows the frequency of each parameter grouped by risk level as a result of the re-analysis.  From the graph we can see some trends such as the frequency of Risk Level 1 vertical speeds being abnormally higher than the frequency of Risk Level 1.  This may mean that the sample set contained an abnormal number of Approaches with too low or too high rate of descent.  We can also see that Risk Level 0 made up a majority of occurrences for heading and cross track, which follows the fact that these parameters are typically less risky as mentioned in their previous corresponding Subsections.
+	Using the metrics defined in the previous Section, the sample set of flights was re-analyzed in order to determine the risk levels of each parameter for every approach.  This was done by taking all the values for a parameter during the approach phase, averaging the values, and determining what risk level range the average fell within.  \Cref{fig:metric_parameter_results} shows the frequency of each parameter grouped by risk level as a result of the re-analysis.  From the graph we can see some trends such as the frequency of Risk Level 2 vertical speeds being abnormally higher than the frequency of Risk Level 1.  This may mean that the sample set contained an abnormal number of approaches with too low or too high rate of descent.  We can also see that Risk Level 0 made up a majority of occurrences for heading and cross track, which follows the fact that these parameters are typically less risky as mentioned in their previous corresponding Subsections.
 	
 	\begin{figure}
 		\centering
@@ -257,78 +257,15 @@
 	\end{figure}
 	
 	
-	With regard to grading the Approaches, the total number of deductions is calculated by summing the risk levels across all parameters as well as the Final Turn risk level.  For example; if during an Approach the aircraft achieved a Risk Level 2 in indicated airspeed, a Risk Level 1 in vertical speed, a Risk Level 1 undershoot for the Final Turn, and a Risk Level 0 for all other parameters; the total number of deductions is 4\footnote{$2\,\text{(IAS)} + 1\,\text{(VSI)} + 1\,\text{(Final Turn)} + 0\,\text{(cross track)} + 0\,\text{(heading)} = 4\,\text{deductions}$}.  Additionally, if the aircraft was unstable during the Approach and the pilot did not perform a go-around, an additional one deduction is added to the total.  The total number of deductions is then multiplied by a penalty constant.  The penalty points are subtracted from a total of 100 points in order to obtain the final grade for the Approach.  In this research, a value of 4 points is used as the penalty per deduction.  This value was chosen because there is a possibility of accruing 11 total deductions\footnote{2 risk levels * 4 parameters + 2 Final Turn risk levels + 1 for unstable w/o go-around = 11}, which would create a total of 44 penalty points.  Thus, the worst possible grade to receive would be 56 points\footnote{If using a 90-80-70-60\% grading scale, this would then correspond to an F.}.  \Cref{fig:scores_hist} gives a histogram of the grades calculated for the sample set of 100 flights used during the experiments.  For the grades of the sample set, the mean was 87.168 points and a standard deviation of 7.260 points.  As the figure shows, the histogram reasonably fits a normal distribution, but slightly skewed to the right.  These results have given us good confidence that the grading system will replicate the grading structure already used in Universities that students are already accustomed to.
+	With regard to grading the approaches, the total number of deductions is calculated by summing the risk levels across all parameters as well as the final turn risk level.  For example; if during an approach the aircraft achieved a Risk Level 2 in indicated airspeed, a Risk Level 1 in vertical speed, a Risk Level 1 undershoot for the final turn, and a Risk Level 0 for all other parameters; the total number of deductions is 4\footnote{$2\,\text{(IAS)} + 1\,\text{(VSI)} + 1\,\text{(final turn)} + 0\,\text{(cross track)} + 0\,\text{(heading)} = 4\,\text{deductions}$}.  Additionally, if the aircraft was unstable during the approach and the pilot did not perform a go-around, an additional one deduction is added to the total.  The total number of deductions is then multiplied by a penalty constant.  The penalty points are subtracted from a total of 100 points in order to obtain the final grade for the approach.  In this research, a value of 4 points is used as the penalty per deduction.  This value was chosen because there is a possibility of accruing 11 total deductions\footnote{2 risk levels * 4 parameters + 2 final turn risk levels + 1 for unstable w/o go-around = 11}, which would create a total of 44 penalty points.  Thus, the worst possible grade to receive would be 56 points\footnote{If using a 90-80-70-60\% grading scale, this would then correspond to an F.}.  \Cref{fig:scores_hist} gives a histogram of the grades calculated for the sample set of 100 flights used during the experiments.  For the grades of the sample set, the mean was 87.168 points and a standard deviation of 7.260 points.  As the figure shows, the histogram reasonably fits a normal distribution, but slightly skewed to the right.  These results have given us good confidence that the grading system will replicate the grading structure already used in Universities that students are already accustomed to.
 	
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{orig_scores_hist}
-		\caption{Histogram showing the results of grading Approach phases.  Each grade is calculated by totaling the risk levels across all parameters then multiplying the sum by a penalty amount per deduction.}
+		\caption{Histogram showing the results of grading approach phases.  Each grade is calculated by totaling the risk levels across all parameters then multiplying the sum by a penalty amount per deduction.}
 		\label{fig:scores_hist}
 	\end{figure}
-    
-    
-%----------------------------------------
-% WEB INTERFACES
-%----------------------------------------
-\section{Web Interfaces}
-
-	This Section details the newly developed web pages for the NGAFID, which dynamically display results based on the user's chosen filters.  At the time of this writing, there have been new tools developed for the Approach, Final Turn, and self-defined glide path analyses.  Each tool will be discussed further in the subsequent Subsections.
-    
-    
-    %----------
-    % APPROACH
-    %----------
-    \subsection{Approach}
-    
-    	A new web page was implemented in the NGAFID for the purpose of dynamically displaying the Approach analysis results produced by the \toolname\ to users (\Cref{fig:approach_tool_screenshot}).  The results are given in four tabs, one for each parameter, as histograms over a specified date range.  A user is able to dynamically add additional date ranges, which will create an additional series in the chart for comparison.  This feature can be used to detect changes in trends over time.  A user is also, optionally, able to filter the results to an airport and further filter to a single runway.  This will allow users to identify trends that are potentially occurring at a specific runway but not at any other runways.
-    
-    	\begin{figure}
-    		\centering
-            \includegraphics[width=\linewidth]{img/approach_tool_screenshot}
-            \caption{A screenshot of the Approach analysis tool on the NGAFID.  It is showing the histogram for indicated airspeed error with two date range filters: 2015-01-01 to 2015-12-31 and 2016-01-01 to 2016-12-31.  The frequency of exceedances can be seen with all values that fall outside of the 55-75 knots range.}
-            \label{fig:approach_tool_screenshot}
-    	\end{figure}
-    
-    
-    %----------
-    % FINAL TURN
-    %----------
-    \subsection{Final Turn}
-    
-    	The tool developed for analyzing Final Turn phases in the NGAFID was implemented with two modes:  \textit{(i)} ``Single Flight'' and \textit{(ii)} ``Aggregate''.
-    
-    	For the ``Single Flight'' mode, the user can input an ID for a specific flight they'd like to analyze (\Cref{fig:single_ttf_screenshot}).  Once the user clicks the ``Display Single Flight'' button, the interactive map then dynamically transitions to the first approach for that flight.  The map will only display one approach at a time; although, there are tabs across the top for each approach which the user can choose.  Once a different tab is chosen, the map automatically transitions the view to that corresponding approach.  The flight path shows different color codings for the separate Final Turn, Approach, and Landing phases as well as different colors for the Final Turn specifically depending on the severity of the turn error.  A Level 1 turn error will be colored yellow, while a Level 2 turn error will be colored red.  If the turn error is less than the Level 1 criteria, it is colored green.  The user is also able to download a PNG screenshot of the map by clicking the ``Download PNG'' button.
         
-        For the ``Aggregate'' mode; the user can choose a specific airport, runway, and month and year combination; which will then display all the approaches that occurred at the chosen runway during the chosen time-frame (\Cref{fig:agg_ttf_screenshot}).  This mode allows a user to see trends in Final Turn phases during a given time span.  This mode displays the same color code scheme as the ``Single Flight'' mode.
-    
-    	\begin{figure}
-    		\centering
-            \includegraphics[width=\linewidth]{img/single_ttf_screenshot}
-            \caption{A screenshot of the Final Turn analysis tool on the NGAFID in ``Single Flight'' mode.  It is currently showing Approach \#1 for Flight ID \#381001.  Approach \#1 shown here had a Level 1 (yellow color code) undershoot.}
-            \label{fig:single_ttf_screenshot}
-    	\end{figure}
-        
-        \begin{figure}
-    		\centering
-            \includegraphics[width=\linewidth]{img/agg_ttf_screenshot}
-            \caption{A screenshot of the Final Turn analysis tool on the NGAFID in ``Aggregate'' mode.  It is currently showing all approaches at the Warren Municipal Airport (KD37) for Runway 12 during the month of January 2015.  The many red and yellow lines coming in from the left side mean that a majority of the turns were Level 1 \& 2 undershoots.}
-            \label{fig:agg_ttf_screenshot}
-    	\end{figure}
-    
-    %----------
-    % SELF-DEFINED
-    %----------
-    \subsection{Self-Defined Glide Path}
-    
-    	The tool implemented in the NGAFID for displaying the results of the self-defined glide path analysis currently only supports an aggregate mode (\Cref{fig:self_defined_screenshot}).  It works similarly to the Final Turn tool as the user chooses an airport, runway, and month and year combination.  This will then display a sideways histogram of all the approaches at the given runway during the given time-frame.  The y-axis shows glide path angles from $0^\circ$ to $10^\circ$ in $5^\circ$ increments, and the x-axis shows the number of occurrences that fell within each angle bin.  Lastly, the user can download an image of the displayed chart by clicking the ``hamburger'' menu button.
-    
-    	\begin{figure}
-    		\centering
-            \includegraphics[width=\linewidth]{img/self_defined_screenshot}
-            \caption{A screenshot of the Self-Defined Approach analysis tool on the NGAFID.  It is currently showing all approaches at the Grand Forks International Airport (KGFK) for Runway 35L during the month of November 2017.  It displays a sideways histogram with glide path angles on the y-axis and the number of occurrences for each angle on the x-axis.}
-            \label{fig:self_defined_screenshot}
-    	\end{figure}
-
 
 %----------------------------------------
 % PERFORMANCE
