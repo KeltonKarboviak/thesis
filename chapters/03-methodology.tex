@@ -73,7 +73,7 @@
         %----------
         \subsubsection{Airport detection.} \label{sec:detect_airport}
         
-        	For identifying the airport that is being approached, a QuadTree~\cite{finkel1974quad} data structure was used.  It was used due to the fact that a two-dimensional tree structure is needed in order to efficiently find the closest airport latitude and longitude point when given the aircraft's latitude and longitude.  The QuadTree is constructed using a list of airport objects from a database then is optimized.  The insertion algorithm yields $\mathcal{O}(n \log n)$ complexity when given random keys, and performs in $\mathcal{O}(\log n)$ time when searching an optimized tree.
+        	For identifying the airport that is being approached, a QuadTree~\cite{finkel1974quad} data structure was used.  It was used due to the fact that a two-dimensional tree structure is needed in order to efficiently find the closest airport latitude and longitude point when given the aircraft's latitude and longitude.  The QuadTree is constructed using a list of airport objects from a database then is optimized.  Both the insertion and searching algorithms yield $\mathcal{O}(\log n)$ complexity.
 
 
         %----------
