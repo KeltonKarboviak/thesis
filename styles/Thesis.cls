@@ -481,8 +481,3 @@
     Table \hfill Page\par
     \@starttoc{lot}%
 }
-
-%----------------------------------------------------------------------------------------
-%	REFERENCES
-%----------------------------------------------------------------------------------------
-\renewcommand\bibname{REFERENCES}  % Change Bibliography title to REFERENCES
