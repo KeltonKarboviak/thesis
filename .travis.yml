@@ -1,0 +1,16 @@
+sudo: required
+dist: trusty
+before_install:
+  - sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends texlive-full
+script:
+  - pdflatex -interaction=nonstopmode -halt-on-error main.tex
+deploy:
+  provider: releases
+  api_key:
+    secure: DRjqN9VQYBzFapZ90sU5wmQ/DwPq4LqLBy39d52iPwzCk+VkTj4WBvu6OV9qLsuwdu0xmw2WVGknbcairi2/NtnEn0N/SCKqa2KaoLq9BEDS6WfLcanYJqllhxyQ6pUvvYQRcTRvEdyhmjwvJOkTZESlgP+9W6XB5t3VdERjd9UuXGftcqT/whQZKwnnna+LOR90RAZKH7LwjQMZwm48JRCTzRen+8ENtAv3GO6xy0C6c2UakNacM3dO+YsaUKbiKJedvMMNz7Y9ccKfxhmJhAY67k+DkeoJKhszMxl/dVr9xMibrixWjegEz3jpgH3ZrACBDU6F3CACI7JiLYMzjZpG0Putsrr9RIGrrwvczp4mnpBRwCb9HJFlWGoJ10q4W9v1/5UpVbV867rnVYTj4ZmQGIcRGXgttl2zcAz3CV5dXTSzJ09iKTzz4qvF/PMddnY8ukUr4iUAogLwvF68730LB1railcwAse8Y5cJRvdVoLMAgS5cegUhcIxPNDaQrbduTz3512/+7Z2x4iZveAERqnS+Voj6oPDv3EeyaERCbrE+iplMvD11ocL7S5boCbpk4ztDPF1SnfxSrZWO0OFqfJ3kQOcreb1EHrXcS18pQxuKXd+KSTXSvAC3NYmhklQkpgDnkgBTf1PqLWfq6EmO90CkaR0zGb/AnibPuCM=
+  file: main.pdf
+  skip_cleanup: true
+  on:
+    repo: KeltonKarboviak/thesis
+    tags: true
+
